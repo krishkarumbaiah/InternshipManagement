@@ -1,0 +1,22 @@
+# Visual Studio / .NET
+bin/
+obj/
+*.user
+*.suo
+*.dbmdl
+*.log
+
+# Angular
+src/ims-frontend/node_modules/
+src/ims-frontend/dist/
+src/ims-frontend/.angular/
+src/ims-frontend/.vscode/
+
+# OS / IDE
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Config
+appsettings.Development.json

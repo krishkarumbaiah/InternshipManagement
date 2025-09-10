@@ -1,0 +1,62 @@
+<div class="container mt-4">
+  <h3>Manage Batches</h3>
+
+  <!-- Add New Batch -->
+  <form (ngSubmit)="addBatch()" class="row g-3 mt-3">
+    <div class="col-md-3">
+      <input
+        type="text"
+        [(ngModel)]="newBatch.name"
+        name="name"
+        placeholder="Enter batch name"
+        class="form-control"
+        required
+      />
+    </div>
+    <div class="col-md-3">
+      <input
+        type="date"
+        [(ngModel)]="newBatch.startDate"
+        name="startDate"
+        class="form-control"
+        required
+      />
+    </div>
+    <div class="col-md-3">
+      <input
+        type="date"
+        [(ngModel)]="newBatch.endDate"
+        name="endDate"
+        class="form-control"
+        required
+      />
+    </div>
+    <div class="col-md-2">
+      <button class="btn btn-success w-100">Add Batch</button>
+    </div>
+  </form>
+
+  <!-- Batch List -->
+  <table class="table table-striped mt-4" *ngIf="batches.length > 0">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Batch Name</th>
+        <th>Start Date</th>
+        <th>End Date</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let batch of batches; index as i">
+        <td>{{ i + 1 }}</td>
+        <td>{{ batch.name }}</td>
+        <td>{{ batch.startDate | date: 'yyyy-MM-dd' }}</td>
+        <td>{{ batch.endDate | date: 'yyyy-MM-dd' }}</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p *ngIf="batches.length === 0" class="text-muted mt-3">
+    No batches found. Add one above.
+  </p>
+</div>
