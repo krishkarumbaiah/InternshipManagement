@@ -1,0 +1,66 @@
+<div class="container mt-4">
+  <h3>Manage User Assignments</h3>
+
+  <!-- Form -->
+  <form (ngSubmit)="assignUser()" class="row g-3 mt-3">
+    <!-- User Dropdown -->
+    <div class="col-md-4">
+      <select [(ngModel)]="selectedUser" name="user" class="form-select" required>
+        <option value="" disabled selected>Select User</option>
+        <option *ngFor="let user of users" [value]="user.id">
+          {{ user.userName }} ({{ user.email }})
+        </option>
+      </select>
+    </div>
+
+    <!-- Batch Dropdown -->
+    <div class="col-md-4">
+      <select
+        [(ngModel)]="selectedBatch"
+        name="batch"
+        class="form-select"
+        required
+        (change)="loadAssignments(selectedBatch!)"
+      >
+        <option value="" disabled selected>Select Batch</option>
+        <option *ngFor="let batch of batches" [value]="batch.id">
+          {{ batch.name }}
+        </option>
+      </select>
+    </div>
+
+    <!-- Assign Button -->
+    <div class="col-md-2">
+      <button class="btn btn-primary w-100">Assign</button>
+    </div>
+  </form>
+
+  <!-- Assignments Table -->
+  <table class="table table-striped mt-4" *ngIf="assignments.length > 0">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>User</th>
+        <th>Batch</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let a of assignments; index as i">
+        <td>{{ i + 1 }}</td>
+        <td>{{ a.userName }}</td>
+        <td>{{ a.batchName }}</td>
+        <td>
+          <button (click)="unassignUser(a.id)" class="btn btn-danger btn-sm">
+            Unassign
+          </button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- No Assignments -->
+  <p *ngIf="assignments.length === 0 && selectedBatch" class="text-muted mt-3">
+    No users assigned to this batch.
+  </p>
+</div>

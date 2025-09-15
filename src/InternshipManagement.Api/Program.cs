@@ -3,6 +3,7 @@ using System.Security.Claims;
 using System.Text;
 using InternshipManagement.Api.Data;
 using InternshipManagement.Api.Models;
+using InternshipManagement.Api.Services; 
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -67,7 +68,7 @@ builder.Services.AddAuthentication(options =>
 {
     options.RequireHttpsMetadata = false;
     options.SaveToken = true;
-    options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
+    options.TokenValidationParameters = new TokenValidationParameters
     {
         ValidateIssuerSigningKey = true,
         IssuerSigningKey = new SymmetricSecurityKey(keyBytes),
@@ -90,6 +91,8 @@ builder.Services.AddCors(options =>
                         .AllowAnyMethod());
 });
 
+
+builder.Services.AddHostedService<NotificationService>();
 
 var app = builder.Build();
 

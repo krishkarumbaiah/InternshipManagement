@@ -1,0 +1,28 @@
+<div class="container mt-4">
+  <h3>My Notifications</h3>
+
+  <button class="btn btn-sm btn-outline-primary mb-3" (click)="loadNotifications()" [disabled]="loading">
+    🔄 Refresh
+  </button>
+
+  <div *ngIf="loading" class="text-muted">Loading...</div>
+
+  <ul class="list-group" *ngIf="notifications.length > 0 && !loading; else noNotif">
+    <li class="list-group-item d-flex justify-content-between align-items-center"
+        *ngFor="let n of notifications; trackBy: trackById">
+      <div>
+        <strong>{{ n.message }}</strong>
+        <div class="small text-muted">
+          Scheduled at: {{ n.scheduledAt | date:'short' }}
+        </div>
+      </div>
+      <a *ngIf="n.meetingLink" [href]="n.meetingLink" target="_blank" class="btn btn-sm btn-primary">
+        Join
+      </a>
+    </li>
+  </ul>
+
+  <ng-template #noNotif>
+    <p class="text-muted">No notifications available.</p>
+  </ng-template>
+</div>

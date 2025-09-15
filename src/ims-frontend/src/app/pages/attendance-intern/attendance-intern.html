@@ -1,0 +1,28 @@
+<div class="container mt-4">
+  <h3>My Attendance</h3>
+
+  <table class="table table-striped mt-3" *ngIf="attendance.length > 0; else noAttendance">
+    <thead>
+      <tr>
+        <th>Date</th>
+        <th>Batch</th>
+        <th>Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let record of attendance">
+        <td>{{ record.date | date: 'yyyy-MM-dd' }}</td>
+        <td>{{ record.batchName }}</td>
+        <td>
+          <span [class.text-success]="record.isPresent" [class.text-danger]="!record.isPresent">
+            {{ record.isPresent ? 'Present' : 'Absent' }}
+          </span>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <ng-template #noAttendance>
+    <p class="text-muted">No attendance records found.</p>
+  </ng-template>
+</div>

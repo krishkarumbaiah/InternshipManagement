@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using InternshipManagement.Api.Data;
 using InternshipManagement.Api.Models;
+using InternshipManagement.Api.Models.DTOs;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -16,30 +17,47 @@ namespace InternshipManagement.Api.Controllers
         private readonly AppDbContext _db;
         public UserBatchesController(AppDbContext db) => _db = db;
 
-        // GET: api/userbatches/byuser/5
+        // GET: api/userbatches/byuser/{userId}
         [HttpGet("byuser/{userId:int}")]
         public async Task<IActionResult> ByUser(int userId)
         {
             var items = await _db.UserBatches
-                .Where(ub => ub.UserId == userId)
+                .Where(ub => ub.UserId == userId)   
                 .Include(ub => ub.Batch)
+                .Select(ub => new UserBatchDto
+                {
+                    Id = ub.Id,
+                    UserId = ub.UserId,
+                    BatchId = ub.BatchId,
+                    BatchName = ub.Batch.Name
+                })
                 .ToListAsync();
+
             return Ok(items);
         }
 
-        // GET: api/userbatches/bybatch/5
+        // GET: api/userbatches/bybatch/{batchId}
         [HttpGet("bybatch/{batchId:int}")]
         public async Task<IActionResult> ByBatch(int batchId)
         {
             var items = await _db.UserBatches
                 .Where(ub => ub.BatchId == batchId)
                 .Include(ub => ub.User)
+                .Include(ub => ub.Batch)
+                .Select(ub => new UserBatchDto
+                {
+                    Id = ub.Id,
+                    UserId = ub.UserId,
+                    BatchId = ub.BatchId,
+                    UserName = ub.User.UserName,
+                    BatchName = ub.Batch.Name
+                })
                 .ToListAsync();
+
             return Ok(items);
         }
 
         // POST: api/userbatches/assign
-        // Admin only
         [Authorize(Roles = "Admin")]
         [HttpPost("assign")]
         public async Task<IActionResult> Assign([FromBody] AssignDto dto)
@@ -55,7 +73,8 @@ namespace InternshipManagement.Api.Controllers
             if (batch == null) return NotFound($"Batch {dto.BatchId} not found");
 
             // prevent duplicate
-            var exists = await _db.UserBatches.AnyAsync(ub => ub.UserId == dto.UserId && ub.BatchId == dto.BatchId);
+            var exists = await _db.UserBatches
+                .AnyAsync(ub => ub.UserId == dto.UserId && ub.BatchId == dto.BatchId); // ✅ int == int
             if (exists) return Conflict("User already assigned to this batch.");
 
             var ubEntry = new UserBatch
@@ -63,12 +82,14 @@ namespace InternshipManagement.Api.Controllers
                 UserId = dto.UserId,
                 BatchId = dto.BatchId
             };
+
             _db.UserBatches.Add(ubEntry);
             await _db.SaveChangesAsync();
-            return Ok(ubEntry);
+
+            return Ok(new { message = "User assigned to batch successfully" });
         }
 
-        // DELETE: api/userbatches/unassign/5
+        // DELETE: api/userbatches/unassign/{id}
         [Authorize(Roles = "Admin")]
         [HttpDelete("unassign/{id:int}")]
         public async Task<IActionResult> Unassign(int id)
@@ -81,5 +102,6 @@ namespace InternshipManagement.Api.Controllers
         }
     }
 
+    // ✅ Fix: Both UserId and BatchId are int
     public record AssignDto([Required] int UserId, [Required] int BatchId);
 }

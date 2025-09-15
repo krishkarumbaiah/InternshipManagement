@@ -1,50 +1,69 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
-import { HttpClient } from '@angular/common/http';
+import { FormsModule } from '@angular/forms';  
+import { BatchService } from '../../services/batch';
 import { ToastrService } from 'ngx-toastr';
-import { environment } from '../../environments/environment';
 
 @Component({
   selector: 'app-batches',
   standalone: true,
-  imports: [CommonModule, FormsModule],
   templateUrl: './batches.html',
-  styleUrls: ['./batches.scss']
+  styleUrls: ['./batches.scss'],
+  imports: [CommonModule, FormsModule]   
 })
 export class BatchesComponent implements OnInit {
   batches: any[] = [];
-  newBatch = { name: '', startDate: '', endDate: '' };
+  newBatch: any = { name: '', startDate: '', endDate: '' };
+  editBatch: any = null;
 
-  constructor(private http: HttpClient, private toastr: ToastrService) {}
+  constructor(private batchService: BatchService, private toastr: ToastrService) {}
 
   ngOnInit(): void {
     this.loadBatches();
   }
 
   loadBatches() {
-    this.http.get<any[]>(`${environment.apiUrl}/batches`).subscribe({
-      next: (data) => (this.batches = data),
+    this.batchService.getBatches().subscribe({
+      next: (data) => this.batches = data,
       error: () => this.toastr.error('Failed to load batches')
     });
   }
 
   addBatch() {
-    if (!this.newBatch.name.trim() || !this.newBatch.startDate || !this.newBatch.endDate) {
-      this.toastr.warning('All fields are required');
-      return;
-    }
-
-    this.http.post(`${environment.apiUrl}/batches`, this.newBatch).subscribe({
+    this.batchService.createBatch(this.newBatch).subscribe({
       next: () => {
         this.toastr.success('Batch added successfully');
-        this.newBatch = { name: '', startDate: '', endDate: '' };
         this.loadBatches();
+        this.newBatch = { name: '', startDate: '', endDate: '' };
       },
-      error: (err) => {
-        console.error(err);
-        this.toastr.error('Failed to add batch');
-      }
+      error: () => this.toastr.error('Failed to add batch')
     });
+  }
+
+  startEdit(batch: any) {
+    this.editBatch = { ...batch };
+  }
+
+  updateBatch() {
+    this.batchService.updateBatch(this.editBatch.id, this.editBatch).subscribe({
+      next: () => {
+        this.toastr.success('Batch updated successfully');
+        this.loadBatches();
+        this.editBatch = null;
+      },
+      error: () => this.toastr.error('Failed to update batch')
+    });
+  }
+
+  deleteBatch(id: number) {
+    if (confirm('Are you sure you want to delete this batch?')) {
+      this.batchService.deleteBatch(id).subscribe({
+        next: () => {
+          this.toastr.success('Batch deleted successfully');
+          this.loadBatches();
+        },
+        error: () => this.toastr.error('Failed to delete batch')
+      });
+    }
   }
 }

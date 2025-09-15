@@ -19,15 +19,30 @@ export class AuthService {
     return this.http.post(`${this.apiUrl}/auth/register`, data);
   }
 
-  saveToken(token: string) {
+  saveAuthData(token: string, roles: string[]) {
     localStorage.setItem('token', token);
+    localStorage.setItem('roles', JSON.stringify(roles));
   }
 
   getToken(): string | null {
     return localStorage.getItem('token');
   }
 
+  getRoles(): string[] {
+    const roles = localStorage.getItem('roles');
+    return roles ? JSON.parse(roles) : [];
+  }
+
+  isLoggedIn(): boolean {
+    return !!this.getToken();
+  }
+
+  isAdmin(): boolean {
+    return this.getRoles().includes('Admin');
+  }
+
   logout() {
     localStorage.removeItem('token');
+    localStorage.removeItem('roles');
   }
 }

@@ -1,0 +1,52 @@
+<div class="container mt-4">
+  <h3>Manage Meetings</h3>
+
+  <!-- Create Meeting -->
+  <form (ngSubmit)="createMeeting()" class="mb-3">
+    <div class="row">
+      <div class="col-md-3">
+        <input [(ngModel)]="newMeeting.title" name="title" class="form-control" placeholder="Title" required />
+      </div>
+      <div class="col-md-3">
+        <input [(ngModel)]="newMeeting.description" name="description" class="form-control" placeholder="Description" />
+      </div>
+      <div class="col-md-3">
+        <input [(ngModel)]="newMeeting.scheduledAt" name="scheduledAt" type="datetime-local" class="form-control" required />
+      </div>
+      <div class="col-md-2">
+        <input [(ngModel)]="newMeeting.meetingLink" name="meetingLink" class="form-control" placeholder="Meeting Link" required />
+      </div>
+      <div class="col-md-1">
+        <button class="btn btn-primary w-100">Add</button>
+      </div>
+    </div>
+  </form>
+
+  <!-- Meetings List -->
+  <table class="table table-bordered">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Title</th>
+        <th>Description</th>
+        <th>Created At</th>
+        <th>Scheduled At</th>
+        <th>Link</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let m of meetings; index as i">
+        <td>{{ i + 1 }}</td>
+        <td>{{ m.title }}</td>
+        <td>{{ m.description }}</td>
+        <td>{{ m.createdAt | date:'short' }}</td>
+        <td>{{ m.scheduledAt | date:'short' }}</td>
+        <td><a [href]="m.meetingLink" target="_blank">Join</a></td>
+        <td>
+          <button class="btn btn-danger btn-sm" (click)="deleteMeeting(m.id)">Delete</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

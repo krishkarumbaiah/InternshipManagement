@@ -1,43 +1,59 @@
-<div class="container mt-5" style="max-width: 500px">
+<div class="container mt-5" style="max-width: 450px">
   <div class="card shadow p-4">
     <h3 class="mb-3 text-center">Register</h3>
-    <form (ngSubmit)="register()" #registerForm="ngForm">
+
+    <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+      <!-- Full Name -->
       <div class="mb-3">
-        <label class="form-label">Full Name</label>
-        <input [(ngModel)]="model.fullName" name="fullName" class="form-control" required />
+        <label for="fullName" class="form-label">Full Name</label>
+        <input id="fullName" type="text" formControlName="fullName" class="form-control" />
+        <div *ngIf="registerForm.get('fullName')?.touched && registerForm.get('fullName')?.invalid" class="text-danger">
+          Full name is required
+        </div>
       </div>
 
+      <!-- Username -->
       <div class="mb-3">
-        <label class="form-label">Username</label>
-        <input [(ngModel)]="model.userName" name="userName" class="form-control" required />
+        <label for="username" class="form-label">Username</label>
+        <input id="username" type="text" formControlName="username" class="form-control" />
+        <div *ngIf="registerForm.get('username')?.touched && registerForm.get('username')?.invalid" class="text-danger">
+          Username is required
+        </div>
       </div>
 
+      <!-- Email -->
       <div class="mb-3">
-        <label class="form-label">Email</label>
-        <input [(ngModel)]="model.email" name="email" type="email" class="form-control" required />
+        <label for="email" class="form-label">Email</label>
+        <input id="email" type="email" formControlName="email" class="form-control" />
+        <div *ngIf="registerForm.get('email')?.touched && registerForm.get('email')?.invalid" class="text-danger">
+          Please enter a valid email
+        </div>
       </div>
 
+      <!-- Password -->
       <div class="mb-3">
-        <label class="form-label">Password</label>
-        <input
-          [(ngModel)]="model.password"
-          name="password"
-          type="password"
-          class="form-control"
-          required
-        />
+        <label for="password" class="form-label">Password</label>
+        <input id="password" type="password" formControlName="password" class="form-control" />
+        <div *ngIf="registerForm.get('password')?.touched && registerForm.get('password')?.invalid" class="text-danger">
+          Password must be at least 6 characters
+        </div>
       </div>
 
+      <!-- Role -->
       <div class="mb-3">
-        <label class="form-label">Role</label>
-        <select [(ngModel)]="model.role" name="role" class="form-select" required>
+        <label for="role" class="form-label">Role</label>
+        <select id="role" formControlName="role" class="form-select">
           <option value="Intern">Intern</option>
-          <option value="Trainer">Trainer</option>
+          <option value="Admin">Admin</option>
         </select>
       </div>
 
-      <button class="btn btn-success w-100" [disabled]="registerForm.invalid">Register</button>
+      <!-- Submit Button -->
+      <button class="btn btn-success w-100" type="submit" [disabled]="registerForm.invalid">
+        Register
+      </button>
     </form>
+
     <div class="text-center mt-3">
       <span>Already have an account?</span>
       <a routerLink="/login"> Login here</a>

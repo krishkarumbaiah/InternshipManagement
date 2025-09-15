@@ -1,21 +1,68 @@
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark"> 
   <div class="container-fluid">
-    <a class="navbar-brand" routerLink="/dashboard">IMS</a>
+    <a class="navbar-brand" href="#">Internship Management</a>
+    <button
+      class="navbar-toggler"
+      type="button"
+      data-bs-toggle="collapse"
+      data-bs-target="#navbarNav"
+      aria-controls="navbarNav"
+      aria-expanded="false"
+      aria-label="Toggle navigation"
+    >
+      <span class="navbar-toggler-icon"></span>
+    </button>
 
-    <div class="collapse navbar-collapse">
-      <ul class="navbar-nav me-auto">
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <!-- Dashboard for everyone -->
         <li class="nav-item">
           <a class="nav-link" routerLink="/dashboard">Dashboard</a>
         </li>
-        <li class="nav-item">
-          <a class="nav-link" routerLink="/batches">Manage Batches</a>
-        </li>
+
+        <!-- Admin-only menu -->
+        <ng-container *ngIf="isAdmin()">
+          <li class="nav-item">
+            <a class="nav-link" routerLink="/batches">Manage Batches</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" routerLink="/assignments">Manage Assignments</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" routerLink="/qna-admin">QnA Admin</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" routerLink="/attendance-admin">Attendance Management</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" routerLink="/meetings-admin">Manage Meetings</a>
+          </li>
+        </ng-container>
+
+        <!-- Intern-only menu -->
+        <ng-container *ngIf="isIntern()">
+          <li class="nav-item">
+            <a class="nav-link" routerLink="/qna">QnA</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" routerLink="/attendance">My Attendance</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" routerLink="/meetings">Meetings</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" routerLink="/notifications">Notifications</a>
+          </li>
+        </ng-container>
       </ul>
+
+      <!-- Logout -->
       <button class="btn btn-outline-light" (click)="logout()">Logout</button>
     </div>
   </div>
 </nav>
 
-<div class="container mt-3">
+<!-- Render child routes -->
+<div class="container mt-4">
   <router-outlet></router-outlet>
 </div>

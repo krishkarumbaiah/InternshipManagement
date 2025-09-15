@@ -1,0 +1,85 @@
+<div class="container mt-4">
+  <h3>QnA Management</h3>
+
+  <table class="table table-bordered mt-3" *ngIf="qna.length > 0">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Question</th>
+        <th>Asked By</th>
+        <th>Answer</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let item of qna; index as i">
+        <td>{{ i + 1 }}</td>
+        <td>{{ item.text }}</td>
+        <td>{{ item.userName }}</td>
+
+        <!-- ✅ Answer Section -->
+        <td>
+          <!-- Edit mode for answers -->
+          <div *ngIf="editAnswerId === item.id; else viewAnswer">
+            <input
+              type="text"
+              class="form-control mb-2"
+              [(ngModel)]="editAnswerText"
+            />
+            <button
+              class="btn btn-primary btn-sm me-2"
+              (click)="updateAnswer(item.id)"
+            >
+              Save
+            </button>
+            <button
+              class="btn btn-secondary btn-sm"
+              (click)="cancelEditAnswer()"
+            >
+              Cancel
+            </button>
+          </div>
+
+          <!-- Normal view -->
+          <ng-template #viewAnswer>
+            <div *ngIf="item.answer; else noAnswer">
+              {{ item.answer }}
+              <button
+                class="btn btn-link btn-sm p-0 ms-2"
+                (click)="startEditAnswer(item)"
+              >
+                ✏️ Edit
+              </button>
+            </div>
+            <ng-template #noAnswer>
+              <input
+                type="text"
+                class="form-control mb-2"
+                placeholder="Enter answer"
+                #answerInput
+              />
+              <button
+                class="btn btn-success btn-sm"
+                (click)="answerQuestion(item.id, answerInput.value)"
+              >
+                Submit
+              </button>
+            </ng-template>
+          </ng-template>
+        </td>
+
+        <!-- ✅ Delete action -->
+        <td>
+          <button
+            class="btn btn-danger btn-sm"
+            (click)="deleteQuestion(item.id)"
+          >
+            Delete
+          </button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p *ngIf="qna.length === 0" class="text-muted">No questions yet.</p>
+</div>

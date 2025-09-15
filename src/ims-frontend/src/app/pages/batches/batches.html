@@ -2,8 +2,9 @@
   <h3>Manage Batches</h3>
 
   <!-- Add New Batch -->
-  <form (ngSubmit)="addBatch()" class="row g-3 mt-3">
+  <form (ngSubmit)="addBatch()" class="row g-3 mt-3" *ngIf="!editBatch">
     <div class="col-md-3">
+      <label for="name" class="form-label">Batch Name</label>
       <input
         type="text"
         [(ngModel)]="newBatch.name"
@@ -14,6 +15,7 @@
       />
     </div>
     <div class="col-md-3">
+      <label for="startDate" class="form-label">Start Date</label>
       <input
         type="date"
         [(ngModel)]="newBatch.startDate"
@@ -23,6 +25,7 @@
       />
     </div>
     <div class="col-md-3">
+      <label for="endDate" class="form-label">End Date</label>
       <input
         type="date"
         [(ngModel)]="newBatch.endDate"
@@ -36,6 +39,49 @@
     </div>
   </form>
 
+  <!-- Edit Batch Form -->
+  <form (ngSubmit)="updateBatch()" class="row g-3 mt-3" *ngIf="editBatch">
+    <div class="col-md-3">
+      <label for="editName" class="form-label">Batch Name</label>
+      <input
+        type="text"
+        id="editName"
+        [(ngModel)]="editBatch.name"
+        name="editName"
+        class="form-control"
+        required
+      />
+    </div>
+    <div class="col-md-3">
+      <label for="editStartDate" class="form-label">Start Date</label>
+      <input
+        type="date"
+        id="editStartDate"
+        [(ngModel)]="editBatch.startDate"
+        name="editStartDate"
+        class="form-control"
+        required
+      />
+    </div>
+    <div class="col-md-3">
+      <label for="editEndDate" class="form-label">End Date</label>
+      <input
+        type="date"
+        id="editEndDate"
+        [(ngModel)]="editBatch.endDate"
+        name="editEndDate"
+        class="form-control"
+        required
+      />
+    </div>
+    <div class="col-md-2 d-flex align-items-end gap-2">
+      <button class="btn btn-primary w-100">Update</button>
+      <button type="button" class="btn btn-secondary w-100" (click)="editBatch = null">
+        Cancel
+      </button>
+    </div>
+  </form>
+
   <!-- Batch List -->
   <table class="table table-striped mt-4" *ngIf="batches.length > 0">
     <thead>
@@ -44,19 +90,22 @@
         <th>Batch Name</th>
         <th>Start Date</th>
         <th>End Date</th>
+        <th>Actions</th>
       </tr>
     </thead>
     <tbody>
       <tr *ngFor="let batch of batches; index as i">
         <td>{{ i + 1 }}</td>
         <td>{{ batch.name }}</td>
-        <td>{{ batch.startDate | date: 'yyyy-MM-dd' }}</td>
-        <td>{{ batch.endDate | date: 'yyyy-MM-dd' }}</td>
+        <td>{{ batch.startDate | date : 'yyyy-MM-dd' }}</td>
+        <td>{{ batch.endDate | date : 'yyyy-MM-dd' }}</td>
+        <td>
+          <button class="btn btn-sm btn-warning me-2" (click)="startEdit(batch)">Edit</button>
+          <button class="btn btn-sm btn-danger" (click)="deleteBatch(batch.id)">Delete</button>
+        </td>
       </tr>
     </tbody>
   </table>
 
-  <p *ngIf="batches.length === 0" class="text-muted mt-3">
-    No batches found. Add one above.
-  </p>
+  <p *ngIf="batches.length === 0" class="text-muted mt-3">No batches found. Add one above.</p>
 </div>

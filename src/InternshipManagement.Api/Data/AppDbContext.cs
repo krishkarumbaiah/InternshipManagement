@@ -15,11 +15,16 @@ namespace InternshipManagement.Api.Data
 
         public DbSet<Batch> Batches { get; set; }= null!;
         public DbSet<UserBatch> UserBatches { get; set; }= null!;
+        public DbSet<Question> Questions { get; set; }
+        public DbSet<Attendance> Attendance { get; set; }= null!;
+        public DbSet<Meeting> Meetings { get; set; }
+        public DbSet<Notification> Notifications { get; set; }
+
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
-                        
+
             builder.Entity<UserBatch>()
                 .HasOne(ub => ub.User)
                 .WithMany()
@@ -32,7 +37,7 @@ namespace InternshipManagement.Api.Data
                 .HasForeignKey(ub => ub.BatchId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            
+
             builder.Entity<TypeCdmt>().ToTable("TypeCdmt");
             builder.Entity<RowStatus>().ToTable("RowStatus");
         }

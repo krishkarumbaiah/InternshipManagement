@@ -1,0 +1,41 @@
+<div class="container mt-4">
+  <h3>Attendance Management (Admin)</h3>
+
+  <div class="row mb-3">
+    <div class="col-md-4">
+      <label>Select Batch</label>
+      <select class="form-control" [(ngModel)]="selectedBatch" (change)="loadUsers(selectedBatch)">
+        <option [ngValue]="null">-- Select Batch --</option>
+        <option *ngFor="let b of batches" [value]="b.id">{{ b.name }}</option>
+      </select>
+    </div>
+
+    <div class="col-md-4">
+      <label>Date</label>
+      <input type="date" class="form-control" [(ngModel)]="date" />
+    </div>
+  </div>
+
+  <table class="table table-bordered" *ngIf="users.length > 0">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Intern</th>
+        <th>Present?</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let u of users; index as i">
+        <td>{{ i + 1 }}</td>
+        <td>{{ u.userName }}</td>
+        <td>
+          <input type="checkbox" [(ngModel)]="attendance[u.userId]" />
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <button class="btn btn-success mt-3" (click)="markAttendance()" *ngIf="users.length > 0">
+    Save Attendance
+  </button>
+</div>

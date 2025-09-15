@@ -1,0 +1,77 @@
+<div class="container mt-4">
+  <h3>QnA (Intern)</h3>
+
+  <!-- Ask Question -->
+  <form (ngSubmit)="askQuestion()" class="mb-3">
+    <div class="input-group">
+      <input
+        type="text"
+        [(ngModel)]="newQuestion"
+        name="question"
+        class="form-control"
+        placeholder="Type your question..."
+        required
+      />
+      <button class="btn btn-primary">Ask</button>
+    </div>
+  </form>
+
+  <!-- My Questions -->
+  <h5>My Questions</h5>
+  <ul class="list-group mb-4" *ngIf="myQuestions.length > 0; else noMyQ">
+    <li class="list-group-item" *ngFor="let q of myQuestions">
+      
+      <!-- Editing Mode -->
+      <div *ngIf="editingQuestionId === q.id; else viewMode">
+        <input
+          type="text"
+          [(ngModel)]="editedText"
+          name="editText"
+          class="form-control mb-2"
+        />
+        <button class="btn btn-success btn-sm me-2" (click)="saveEdit(q.id)">
+          Save
+        </button>
+        <button class="btn btn-secondary btn-sm" (click)="cancelEdit()">
+          Cancel
+        </button>
+      </div>
+
+      <!-- Normal View -->
+      <ng-template #viewMode>
+        <strong>{{ q.text }}</strong>
+        <div *ngIf="q.answer" class="text-success">Answer: {{ q.answer }}</div>
+        <div class="text-muted small">{{ q.createdAt | date:'short' }}</div>
+
+        <!-- Edit / Delete Buttons -->
+        <button
+          class="btn btn-warning btn-sm me-2 mt-1"
+          (click)="startEdit(q)"
+        >
+          Edit
+        </button>
+        <button
+          class="btn btn-danger btn-sm mt-1"
+          (click)="deleteQuestion(q.id)"
+        >
+          Delete
+        </button>
+      </ng-template>
+    </li>
+  </ul>
+  <ng-template #noMyQ>
+    <p class="text-muted">You haven’t asked any questions yet.</p>
+  </ng-template>
+
+  <!-- All Questions -->
+  <h5>All Questions</h5>
+  <ul class="list-group" *ngIf="allQuestions.length > 0; else noQ">
+    <li class="list-group-item" *ngFor="let q of allQuestions">
+      <strong>{{ q.userName }}:</strong> {{ q.text }}
+      <div *ngIf="q.answer" class="text-success">Answer: {{ q.answer }}</div>
+    </li>
+  </ul>
+  <ng-template #noQ>
+    <p class="text-muted">No questions found.</p>
+  </ng-template>
+</div>

@@ -4,17 +4,42 @@ import { RegisterComponent } from './pages/register/register';
 import { DashboardComponent } from './pages/dashboard/dashboard';
 import { MainLayoutComponent } from './layout/main-layout/main-layout';
 import { BatchesComponent } from './pages/batches/batches';
+import { AssignmentsComponent } from './pages/assignments/assignments';
+import { authGuard } from './guards/auth-guard';
+import { QnaComponent } from './pages/qna/qna';
+import { QnaAdminComponent } from './pages/qna-admin/qna-admin';
+import { AttendanceAdminComponent } from './pages/attendance-admin/attendance-admin';
+import { AttendanceInternComponent } from './pages/attendance-intern/attendance-intern';
+import { MeetingsAdminComponent } from './pages/meetings-admin/meetings-admin';
+import { MeetingsComponent } from './pages/meetings/meetings';
+import { NotificationsComponent } from './pages/notifications/notifications';
 
 export const routes: Routes = [
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent },
+
   {
     path: '',
     component: MainLayoutComponent,
+    canActivate: [authGuard],
     children: [
       { path: 'dashboard', component: DashboardComponent },
-      { path: 'batches', component: BatchesComponent }
+
+      // Intern routes
+      { path: 'qna', component: QnaComponent, data: { roles: ['Intern'] } },
+      { path: 'attendance', component: AttendanceInternComponent, data: { roles: ['Intern'] } },
+      { path: 'meetings', component: MeetingsComponent, data: { roles: ['Intern'] } },
+      { path: 'notifications', component: NotificationsComponent, data: { roles: ['Intern'] } },
+
+
+      // Admin routes
+      { path: 'qna-admin', component: QnaAdminComponent, data: { roles: ['Admin'] } },
+      { path: 'attendance-admin', component: AttendanceAdminComponent, data: { roles: ['Admin'] } },
+      { path: 'batches', component: BatchesComponent, data: { roles: ['Admin'] } },
+      { path: 'assignments', component: AssignmentsComponent, data: { roles: ['Admin'] } },
+      { path: 'meetings-admin', component: MeetingsAdminComponent, data: { roles: ['Admin'] } }
     ]
   },
+
   { path: '', redirectTo: 'login', pathMatch: 'full' }
 ];
