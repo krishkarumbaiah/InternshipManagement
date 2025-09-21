@@ -7,7 +7,8 @@ namespace InternshipManagement.Api.Models.DTOs
         [Required, EmailAddress] string Email,
         [Required] string FullName,
         [Required] string Password,
-        string? Role
+        string? Role,
+        [Required] string Otp   
     );
 
     public record LoginDto(

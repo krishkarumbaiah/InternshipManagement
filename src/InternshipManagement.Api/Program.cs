@@ -45,14 +45,13 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 // Identity (int keys)
 builder.Services.AddIdentity<ApplicationUser, IdentityRole<int>>(options =>
 {
-    // adjust password rules for dev; tighten for production
     options.Password.RequireDigit = true;
     options.Password.RequiredLength = 6;
     options.Password.RequireNonAlphanumeric = false;
     options.User.RequireUniqueEmail = true;
 })
     .AddEntityFrameworkStores<AppDbContext>()
-    .AddDefaultTokenProviders();
+    .AddDefaultTokenProviders(); 
 
 // JWT settings
 var jwtSettings = builder.Configuration.GetSection("JwtSettings");
@@ -91,7 +90,9 @@ builder.Services.AddCors(options =>
                         .AllowAnyMethod());
 });
 
+builder.Services.AddScoped<IAppEmailSender, EmailSender>();
 
+// Existing hosted service
 builder.Services.AddHostedService<NotificationService>();
 
 var app = builder.Build();
@@ -104,10 +105,8 @@ using (var scope = app.Services.CreateScope())
     var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
     var roleManager = services.GetRequiredService<RoleManager<IdentityRole<int>>>();
 
-    // Apply migrations
     db.Database.Migrate();
 
-    // Seed roles & admin
     async Task SeedIdentity()
     {
         string[] roles = new[] { "Admin", "Intern", "Trainer" };
@@ -136,7 +135,6 @@ using (var scope = app.Services.CreateScope())
             }
             else
             {
-                // log errors to console
                 foreach (var err in createRes.Errors) Console.WriteLine(err.Description);
             }
         }
@@ -144,7 +142,6 @@ using (var scope = app.Services.CreateScope())
 
     async Task SeedMasterTables()
     {
-        // TypeCdmt sample
         if (!db.TypeCdmt.Any())
         {
             db.TypeCdmt.AddRange(new[]
@@ -154,7 +151,6 @@ using (var scope = app.Services.CreateScope())
             });
         }
 
-        // RowStatus sample
         if (!db.RowStatus.Any())
         {
             db.RowStatus.AddRange(new[]
@@ -168,8 +164,24 @@ using (var scope = app.Services.CreateScope())
         await db.SaveChangesAsync();
     }
 
+    // ✅ New: Seed courses
+    async Task SeedCourses()
+    {
+        if (!db.Courses.Any())
+        {
+            db.Courses.AddRange(new[]
+            {
+                new Course { Title = "C# Basics", Description = "Learn fundamentals of C#" },
+                new Course { Title = "ASP.NET Core", Description = "Build APIs with .NET" },
+                new Course { Title = "Angular Fundamentals", Description = "Frontend with Angular" }
+            });
+            await db.SaveChangesAsync();
+        }
+    }
+
     SeedIdentity().GetAwaiter().GetResult();
     SeedMasterTables().GetAwaiter().GetResult();
+    SeedCourses().GetAwaiter().GetResult(); // ✅ Added
 }
 
 if (app.Environment.IsDevelopment())

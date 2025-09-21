@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environments/environment';
 import { ToastrService } from 'ngx-toastr';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-meetings-admin',
@@ -40,15 +41,28 @@ export class MeetingsAdminComponent implements OnInit {
     });
   }
 
-  deleteMeeting(id: number) {
-    if (!confirm('Are you sure you want to delete this meeting?')) return;
+ // Delete meeting with SweetAlert2
+deleteMeeting(id: number) {
+  Swal.fire({
+    title: 'Are you sure?',
+    text: 'This meeting will be permanently deleted!',
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#dc3545',
+    cancelButtonColor: '#6c757d',
+    confirmButtonText: 'Yes, delete it!',
+    cancelButtonText: 'Cancel'
+  }).then((result) => {
+    if (result.isConfirmed) {
+      this.http.delete(`${environment.apiUrl}/meetings/${id}`).subscribe({
+        next: () => {
+          this.toastr.success('Meeting deleted successfully 🗑️');
+          this.loadMeetings();
+        },
+        error: () => this.toastr.error('Failed to delete meeting ❌'),
+      });
+    }
+  });
+}
 
-    this.http.delete(`${environment.apiUrl}/meetings/${id}`).subscribe({
-      next: () => {
-        this.toastr.info('Meeting deleted');
-        this.loadMeetings();
-      },
-      error: () => this.toastr.error('Failed to delete meeting')
-    });
-  }
 }

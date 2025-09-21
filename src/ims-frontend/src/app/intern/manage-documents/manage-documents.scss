@@ -1,0 +1,51 @@
+/* Force styles to apply inside component */
+:host ::ng-deep .custom-docs-table {
+  width: 90%;
+  margin: 0 auto;
+  border-collapse: collapse;
+  border-radius: 8px;
+  overflow: hidden;
+  font-size: 0.9rem;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.08);
+
+  thead tr {
+    background: linear-gradient(90deg, #6a11cb, #2575fc); /* Purple → Blue */
+    color: #ffffff !important; /* White text, force override */
+    text-align: center;
+    font-weight: 700;
+    font-size: 1rem;
+    letter-spacing: 0.5px;
+  }
+
+  th,
+  td {
+    text-align: center;
+    padding: 10px 14px;
+    border: 1px solid #dee2e6;
+  }
+
+  tbody tr:nth-child(odd) {
+    background: #f8f9fa;
+  }
+
+  tbody tr:nth-child(even) {
+    background: #eef4ff;
+  }
+
+  tbody tr:hover {
+    background: #e1f0ff;
+    transition: background 0.2s ease-in-out;
+  }
+}
+
+/* Buttons inside table */
+:host ::ng-deep .custom-docs-table button {
+  font-size: 0.8rem;
+  border-radius: 4px;
+  transition: all 0.2s ease-in-out;
+
+  &:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  }
+}

@@ -1,111 +1,175 @@
-<div class="container mt-4">
-  <h3>Manage Batches</h3>
+<div class="container mt-4 batches-wrapper">
+  <h2 class="page-title">📚 Manage Batches</h2>
 
-  <!-- Add New Batch -->
-  <form (ngSubmit)="addBatch()" class="row g-3 mt-3" *ngIf="!editBatch">
+  <!-- Add Batch Form -->
+  <form (ngSubmit)="addBatch()" class="row g-3 mt-3 batch-form" *ngIf="!editBatch">
     <div class="col-md-3">
-      <label for="name" class="form-label">Batch Name</label>
+      <label class="form-label fw-bold">Batch Name</label>
       <input
         type="text"
         [(ngModel)]="newBatch.name"
         name="name"
         placeholder="Enter batch name"
-        class="form-control"
+        class="form-control custom-input"
         required
       />
     </div>
     <div class="col-md-3">
-      <label for="startDate" class="form-label">Start Date</label>
+      <label class="form-label fw-bold">Start Date</label>
       <input
         type="date"
         [(ngModel)]="newBatch.startDate"
         name="startDate"
-        class="form-control"
+        class="form-control custom-input"
         required
       />
     </div>
     <div class="col-md-3">
-      <label for="endDate" class="form-label">End Date</label>
+      <label class="form-label fw-bold">End Date</label>
       <input
         type="date"
         [(ngModel)]="newBatch.endDate"
         name="endDate"
-        class="form-control"
+        class="form-control custom-input"
         required
       />
     </div>
-    <div class="col-md-2">
-      <button class="btn btn-success w-100">Add Batch</button>
+    <div class="col-md-2 d-flex">
+      <button
+        pButton
+        type="submit"
+        label="Add Batch"
+        icon="pi pi-plus"
+        class="btn-add w-20"
+      ></button>
     </div>
   </form>
 
   <!-- Edit Batch Form -->
-  <form (ngSubmit)="updateBatch()" class="row g-3 mt-3" *ngIf="editBatch">
+  <form (ngSubmit)="updateBatch()" class="row g-3 mt-4 batch-form" *ngIf="editBatch">
     <div class="col-md-3">
-      <label for="editName" class="form-label">Batch Name</label>
+      <label class="form-label fw-bold">Batch Name</label>
       <input
         type="text"
-        id="editName"
         [(ngModel)]="editBatch.name"
         name="editName"
-        class="form-control"
+        class="form-control custom-input"
         required
       />
     </div>
     <div class="col-md-3">
-      <label for="editStartDate" class="form-label">Start Date</label>
+      <label class="form-label fw-bold">Start Date</label>
       <input
         type="date"
-        id="editStartDate"
         [(ngModel)]="editBatch.startDate"
         name="editStartDate"
-        class="form-control"
+        class="form-control custom-input"
         required
       />
     </div>
     <div class="col-md-3">
-      <label for="editEndDate" class="form-label">End Date</label>
+      <label class="form-label fw-bold">End Date</label>
       <input
         type="date"
-        id="editEndDate"
         [(ngModel)]="editBatch.endDate"
         name="editEndDate"
-        class="form-control"
+        class="form-control custom-input"
         required
       />
     </div>
     <div class="col-md-2 d-flex align-items-end gap-2">
-      <button class="btn btn-primary w-100">Update</button>
-      <button type="button" class="btn btn-secondary w-100" (click)="editBatch = null">
-        Cancel
-      </button>
+      <button
+        pButton
+        type="submit"
+        label="Update"
+        icon="pi pi-check"
+        class="btn-update"
+      ></button>
+      <button
+        pButton
+        type="button"
+        label="Cancel"
+        icon="pi pi-times"
+        class="btn-cancel"
+        (click)="editBatch = null"
+      ></button>
     </div>
   </form>
 
-  <!-- Batch List -->
-  <table class="table table-striped mt-4" *ngIf="batches.length > 0">
-    <thead>
+  <!-- Export Buttons -->
+  <div class="d-flex justify-content-end mt-4 gap-2">
+    <button
+      class="btn btn-outline-success"
+      (click)="exportToExcel()"
+    >
+      ⬇️ Export Excel
+    </button>
+    <button
+      class="btn btn-outline-danger"
+      (click)="exportToPDF()"
+    >
+      📄 Export PDF
+    </button>
+  </div>
+
+  <!-- PrimeNG Table -->
+  <p-table
+    *ngIf="batches.length > 0"
+    [value]="batches"
+    [paginator]="true"
+    [rows]="5"
+    [rowsPerPageOptions]="[5, 10, 20]"
+    [responsiveLayout]="'scroll'"
+    class="custom-table mt-3"
+  >
+    <ng-template pTemplate="header">
       <tr>
-        <th>#</th>
-        <th>Batch Name</th>
-        <th>Start Date</th>
-        <th>End Date</th>
+        <th pSortableColumn="id"># <p-sortIcon field="id"></p-sortIcon></th>
+        <th pSortableColumn="name">
+          Batch Name <p-sortIcon field="name"></p-sortIcon>
+        </th>
+        <th pSortableColumn="startDate">
+          Start Date <p-sortIcon field="startDate"></p-sortIcon>
+        </th>
+        <th pSortableColumn="endDate">
+          End Date <p-sortIcon field="endDate"></p-sortIcon>
+        </th>
         <th>Actions</th>
       </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let batch of batches; index as i">
+    </ng-template>
+
+    <ng-template pTemplate="body" let-batch let-i="rowIndex">
+      <tr>
         <td>{{ i + 1 }}</td>
-        <td>{{ batch.name }}</td>
+        <td class="fw-semibold">{{ batch.name }}</td>
         <td>{{ batch.startDate | date : 'yyyy-MM-dd' }}</td>
         <td>{{ batch.endDate | date : 'yyyy-MM-dd' }}</td>
         <td>
-          <button class="btn btn-sm btn-warning me-2" (click)="startEdit(batch)">Edit</button>
-          <button class="btn btn-sm btn-danger" (click)="deleteBatch(batch.id)">Delete</button>
+          <button
+            pButton
+            icon="pi pi-pencil"
+            class="btn-edit me-2"
+            (click)="startEdit(batch)"
+          ></button>
+          <button
+            pButton
+            icon="pi pi-trash"
+            class="btn-delete"
+            (click)="deleteBatch(batch.id)"
+          ></button>
         </td>
       </tr>
-    </tbody>
-  </table>
+    </ng-template>
 
-  <p *ngIf="batches.length === 0" class="text-muted mt-3">No batches found. Add one above.</p>
+    <ng-template pTemplate="emptymessage">
+      <tr>
+        <td colspan="5" class="text-center text-muted">
+          ❌ No batches found. Add one above.
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+
+  <!-- PrimeNG Toaster -->
+  <p-toast position="top-right"></p-toast>
 </div>

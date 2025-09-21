@@ -1,0 +1,130 @@
+/* === Buttons Styling === */
+
+/* Add Batch */
+.btn-add {
+  background: linear-gradient(90deg, #28a745, #20c997);
+  color: #ead2d2 !important;
+  font-weight: 600;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 14px; 
+  font-size: 0.9rem;
+  box-shadow: 0 3px 8px rgba(40, 167, 69, 0.3);
+  transition: all 0.2s ease-in-out;
+}
+.btn-add:hover {
+  background: linear-gradient(90deg, #20c997, #28a745);
+  transform: translateY(-2px);
+}
+
+/* Update Button */
+.btn-update {
+  background: linear-gradient(90deg, #007bff, #0dcaf0);
+  color: #dcbcbc !important; 
+  font-weight: 600;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 14px;
+  font-size: 0.9rem;
+  box-shadow: 0 3px 8px rgba(0, 123, 255, 0.3);
+  transition: all 0.2s ease-in-out;
+}
+.btn-update:hover {
+  background: linear-gradient(90deg, #0dcaf0, #007bff);
+  transform: translateY(-2px);
+}
+
+/* Cancel Button */
+.btn-cancel {
+  background: linear-gradient(90deg, #5187c2, #0dcaf0);
+  color: #c0a6a6 !important; 
+  font-weight: 600;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 14px;
+  font-size: 0.9rem;
+  box-shadow: 0 3px 8px rgba(13, 202, 240, 0.3);
+  transition: all 0.2s ease-in-out;
+}
+.btn-cancel:hover {
+  background: linear-gradient(90deg, #cf9235, #ffc107);
+  transform: translateY(-2px);
+}
+
+/* === PrimeNG Toast Custom Styling === */
+:host ::ng-deep .p-toast {
+  top: 80px; /* move down for better visibility */
+}
+
+:host ::ng-deep .p-toast .p-toast-message {
+  border-radius: 8px;
+  font-size: 0.95rem;
+  padding: 14px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+:host ::ng-deep .p-toast .p-toast-message-success {
+  background: linear-gradient(90deg, #28a745, #20c997);
+  color: #fff;
+}
+
+:host ::ng-deep .p-toast .p-toast-message-error {
+  background: linear-gradient(90deg, #dc3545, #ff6b6b);
+  color: #fff;
+}
+
+:host ::ng-deep .p-toast .p-toast-message-warn {
+  background: linear-gradient(90deg, #ffc107, #ff9800);
+  color: #212529;
+}
+
+:host ::ng-deep .p-toast .p-toast-message-info {
+  background: linear-gradient(90deg, #17a2b8, #0dcaf0);
+  color: #fff;
+}
+
+/* === Custom Table Styling === */
+:host ::ng-deep .custom-table {
+  width: 80%;
+  margin: 50px auto 30px auto; 
+  border-radius: 5px;
+  overflow: hidden;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+
+  .p-datatable-thead > tr > th {
+    background: linear-gradient(90deg, #007bff, #00c6ff);
+    color: #fff;
+    font-size: 1.05rem;
+    font-weight: 700;
+    text-align: center;
+    padding: 14px;
+    letter-spacing: 0.5px;
+    border: none;
+  }
+
+  .p-datatable-tbody > tr > td {
+    text-align: center;
+    padding: 14px;
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: #343a40;
+    border-bottom: 1px solid #dee2e6;
+  }
+
+  .p-datatable-tbody > tr:nth-child(odd) {
+    background-color: #f8f9fa;
+  }
+
+  .p-datatable-tbody > tr:hover {
+    background-color: #e9f5ff;
+    transition: background 0.2s ease-in-out;
+  }
+}
+
+/* Table Empty Message */
+:host ::ng-deep .p-datatable .p-datatable-emptymessage td {
+  font-size: 1rem;
+  font-weight: 500;
+  color: #6c757d;
+  padding: 20px;
+}

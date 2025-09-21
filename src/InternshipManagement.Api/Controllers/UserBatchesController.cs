@@ -74,7 +74,7 @@ namespace InternshipManagement.Api.Controllers
 
             // prevent duplicate
             var exists = await _db.UserBatches
-                .AnyAsync(ub => ub.UserId == dto.UserId && ub.BatchId == dto.BatchId); // ✅ int == int
+                .AnyAsync(ub => ub.UserId == dto.UserId && ub.BatchId == dto.BatchId);
             if (exists) return Conflict("User already assigned to this batch.");
 
             var ubEntry = new UserBatch
@@ -102,6 +102,6 @@ namespace InternshipManagement.Api.Controllers
         }
     }
 
-    // ✅ Fix: Both UserId and BatchId are int
+    
     public record AssignDto([Required] int UserId, [Required] int BatchId);
 }

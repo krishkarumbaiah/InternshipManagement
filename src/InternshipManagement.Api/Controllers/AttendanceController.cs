@@ -125,5 +125,20 @@ namespace InternshipManagement.Api.Controllers
 
             return Ok(list);
         }
+        
+        // DELETE: api/attendance/{id}
+        [Authorize(Roles = "Admin")]
+        [HttpDelete("{id:int}")]
+        public async Task<IActionResult> DeleteAttendance(int id)
+        {
+            var record = await _db.Attendance.FindAsync(id);
+            if (record == null) return NotFound("Attendance record not found");
+
+            _db.Attendance.Remove(record);
+            await _db.SaveChangesAsync();
+
+            return Ok(new { message = "Attendance record deleted successfully" });
+        }
+
     }
 }

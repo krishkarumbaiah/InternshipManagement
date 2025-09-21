@@ -1,6 +1,11 @@
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark"> 
+<nav class="navbar navbar-expand-lg navbar-dark custom-navbar shadow-sm">
   <div class="container-fluid">
-    <a class="navbar-brand" href="#">Internship Management</a>
+    <!-- Brand -->
+    <a class="navbar-brand fw-bold text-light" routerLink="/welcome">
+      🌐 Interns Management Service
+    </a>
+
+    <!-- Mobile toggle -->
     <button
       class="navbar-toggler"
       type="button"
@@ -13,51 +18,79 @@
       <span class="navbar-toggler-icon"></span>
     </button>
 
+    <!-- Menu -->
     <div class="collapse navbar-collapse" id="navbarNav">
-      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0 fw-semibold">
         <!-- Dashboard for everyone -->
         <li class="nav-item">
-          <a class="nav-link" routerLink="/dashboard">Dashboard</a>
+          <a class="nav-link" routerLink="/dashboard">🏠 Dashboard</a>
         </li>
 
         <!-- Admin-only menu -->
         <ng-container *ngIf="isAdmin()">
           <li class="nav-item">
-            <a class="nav-link" routerLink="/batches">Manage Batches</a>
+            <a class="nav-link" routerLink="/admin/enrollments">👥 Enrollments</a>
           </li>
+          <li class="nav-item"><a class="nav-link" routerLink="/batches">📦 Manage Batches</a></li>
           <li class="nav-item">
-            <a class="nav-link" routerLink="/assignments">Manage Assignments</a>
+            <a class="nav-link" routerLink="/assignments">📝 Assign Interns</a>
           </li>
+          <li class="nav-item"><a class="nav-link" routerLink="/qna-admin">💬 QnA Admin</a></li>
           <li class="nav-item">
-            <a class="nav-link" routerLink="/qna-admin">QnA Admin</a>
+            <a class="nav-link" routerLink="/attendance-admin">📊 Attendance</a>
           </li>
+          <li class="nav-item"><a class="nav-link" routerLink="/meetings-admin">📅 Meetings</a></li>
           <li class="nav-item">
-            <a class="nav-link" routerLink="/attendance-admin">Attendance Management</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" routerLink="/meetings-admin">Manage Meetings</a>
+            <a class="nav-link" routerLink="/manage-documents">📂 Documents</a>
           </li>
         </ng-container>
 
         <!-- Intern-only menu -->
         <ng-container *ngIf="isIntern()">
+          <li class="nav-item"><a class="nav-link" routerLink="/courses">🎓 Courses</a></li>
+          <li class="nav-item"><a class="nav-link" routerLink="/qna">💬 QnA</a></li>
           <li class="nav-item">
-            <a class="nav-link" routerLink="/qna">QnA</a>
+            <a class="nav-link" routerLink="/attendance">📊 My Attendance</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" routerLink="/attendance">My Attendance</a>
+            <a class="nav-link" routerLink="/upload-documents">📂 Upload Docs</a>
           </li>
+          <li class="nav-item"><a class="nav-link" routerLink="/meetings">📅 Meetings</a></li>
           <li class="nav-item">
-            <a class="nav-link" routerLink="/meetings">Meetings</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" routerLink="/notifications">Notifications</a>
+            <a class="nav-link" routerLink="/notifications">🔔 Notifications</a>
           </li>
         </ng-container>
       </ul>
 
+      <!-- Search bar -->
+      <form class="d-flex me-3 search-form" (ngSubmit)="onSearch()">
+        <input
+          type="text"
+          class="form-control search-input"
+          placeholder="🔍 Search pages..."
+          [(ngModel)]="searchQuery"
+          name="search"
+        />
+        <button class="btn btn-search ms-2" type="submit">Go</button>
+      </form>
+
       <!-- Logout -->
-      <button class="btn btn-outline-light" (click)="logout()">Logout</button>
+      <div class="dropdown">
+        <button
+          class="btn btn-outline-light dropdown-toggle"
+          type="button"
+          id="userMenu"
+          data-bs-toggle="dropdown"
+          aria-expanded="false"
+        >
+          👤 {{ username || 'User' }}
+        </button>
+        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userMenu">
+          <li>
+            <button class="dropdown-item text-danger" (click)="logout()">Logout</button>
+          </li>
+        </ul>
+      </div>
     </div>
   </div>
 </nav>

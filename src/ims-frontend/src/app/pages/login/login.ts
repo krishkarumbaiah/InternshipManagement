@@ -14,6 +14,7 @@ import { ToastrService } from 'ngx-toastr';
 })
 export class LoginComponent implements OnInit {
   loginForm!: FormGroup;
+  showPassword = false;   
 
   constructor(
     private fb: FormBuilder,
@@ -39,7 +40,7 @@ export class LoginComponent implements OnInit {
       next: (res: any) => {
         this.auth.saveAuthData(res.token, res.roles);
         this.toastr.success('Login successful!', 'Success');
-        this.router.navigate(['/dashboard']);
+        this.router.navigate(['/welcome']);
       },
       error: () => {
         this.toastr.error('Invalid username or password', 'Login Failed');

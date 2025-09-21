@@ -1,0 +1,92 @@
+<div class="container mt-4 enrollments-wrapper">
+  <!-- Title -->
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h3 class="fw-bold text-gradient m-0">📚 All Enrollments</h3>
+    <span class="badge total-badge shadow-sm px-4 py-2 fs-6">
+      Total: {{ enrollments.length || 0 }}
+    </span>
+  </div>
+
+  <!-- PrimeNG Spinner -->
+  <div *ngIf="loading" class="text-center my-5">
+    <p-progressSpinner styleClass="custom-spinner"></p-progressSpinner>
+    <p class="mt-3 text-muted">Loading enrollments...</p>
+  </div>
+
+  <!-- PrimeNG DataTable -->
+  <p-table
+    #dt
+    *ngIf="!loading"
+    [value]="enrollments"
+    [paginator]="true"
+    [rows]="10"
+    [rowsPerPageOptions]="[5, 10, 20]"
+    [responsiveLayout]="'scroll'"
+    [loading]="loading"
+    [tableStyle]="{ 'min-width': '75rem' }"
+    styleClass="p-datatable-enrollments shadow-lg"
+  >
+    <!-- Table Header -->
+    <ng-template pTemplate="header">
+      <tr>
+        <th pSortableColumn="username">👤 User <p-sortIcon field="username"></p-sortIcon></th>
+        <th pSortableColumn="email">📧 Email <p-sortIcon field="email"></p-sortIcon></th>
+        <th pSortableColumn="courseTitle">🎓 Course <p-sortIcon field="courseTitle"></p-sortIcon></th>
+        <th pSortableColumn="enrolledAt">🕒 Enrolled At <p-sortIcon field="enrolledAt"></p-sortIcon></th>
+      </tr>
+
+      <!-- Column Filters -->
+      <tr class="filter-row">
+        <th>
+          <input
+            pInputText
+            type="text"
+            (input)="dt.filter($event.target['value'], 'username', 'contains')"
+            placeholder="🔍 Search user"
+          />
+        </th>
+        <th>
+          <input
+            pInputText
+            type="text"
+            (input)="dt.filter($event.target['value'], 'email', 'contains')"
+            placeholder="🔍 Search email"
+          />
+        </th>
+        <th>
+          <input
+            pInputText
+            type="text"
+            (input)="dt.filter($event.target['value'], 'courseTitle', 'contains')"
+            placeholder="🔍 Search course"
+          />
+        </th>
+        <th></th>
+      </tr>
+    </ng-template>
+
+    <!-- Table Body -->
+    <ng-template pTemplate="body" let-e>
+      <tr>
+        <td class="fw-semibold">{{ e.username }}</td>
+        <td>{{ e.email }}</td>
+        <td>
+          <span class="badge course-badge shadow-sm">
+            {{ e.courseTitle }}
+          </span>
+        </td>
+        <td class="text-muted">{{ e.enrolledAt | date : 'medium' }}</td>
+      </tr>
+    </ng-template>
+
+    <!-- Empty State -->
+    <ng-template pTemplate="emptymessage">
+      <tr>
+        <td colspan="4" class="text-center py-5">
+          <i class="pi pi-info-circle fs-4 text-muted"></i>
+          <div class="mt-2 text-muted">No enrollments found</div>
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+</div>

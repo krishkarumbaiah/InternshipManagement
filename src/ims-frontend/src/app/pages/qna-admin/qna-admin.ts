@@ -1,22 +1,27 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { ToastrService } from 'ngx-toastr';
 import { environment } from '../../environments/environment';
+import Swal from 'sweetalert2';
+
+import { TableModule } from 'primeng/table';
+import { ButtonModule } from 'primeng/button';
+import { ToastModule } from 'primeng/toast';
 
 @Component({
   selector: 'app-qna-admin',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, TableModule, ButtonModule, ToastModule],
   templateUrl: './qna-admin.html',
   styleUrls: ['./qna-admin.scss'],
+  encapsulation: ViewEncapsulation.None,
 })
 export class QnaAdminComponent implements OnInit {
   qna: any[] = [];
   apiUrl = environment.apiUrl;
 
-  // 🔹 For edit mode
   editAnswerId: number | null = null;
   editAnswerText: string = '';
 
@@ -44,14 +49,25 @@ export class QnaAdminComponent implements OnInit {
   }
 
   deleteQuestion(id: number) {
-    if (!confirm('Are you sure you want to delete this question?')) return;
-
-    this.http.delete(`${this.apiUrl}/qna/${id}`).subscribe({
-      next: () => {
-        this.toastr.info('Question deleted');
-        this.loadQuestions();
-      },
-      error: () => this.toastr.error('Failed to delete question'),
+    Swal.fire({
+      title: 'Are you sure?',
+      text: 'This question will be permanently deleted!',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#6c757d',
+      confirmButtonText: 'Yes, delete it!',
+      cancelButtonText: 'Cancel',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.http.delete(`${this.apiUrl}/qna/${id}`).subscribe({
+          next: () => {
+            this.toastr.success('✅ Question deleted successfully');
+            this.loadQuestions();
+          },
+          error: () => this.toastr.error('❌ Failed to delete question'),
+        });
+      }
     });
   }
 

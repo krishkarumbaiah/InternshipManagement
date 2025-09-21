@@ -1,29 +1,52 @@
-<div class="container mt-4">
-  <h3>Manage Meetings</h3>
+<div class="container mt-4 meetings-wrapper">
+  <h2 class="page-title">📅 Manage Meetings</h2>
 
   <!-- Create Meeting -->
-  <form (ngSubmit)="createMeeting()" class="mb-3">
-    <div class="row">
+  <form (ngSubmit)="createMeeting()" class="meeting-form mb-4">
+    <div class="row g-3 align-items-end">
       <div class="col-md-3">
-        <input [(ngModel)]="newMeeting.title" name="title" class="form-control" placeholder="Title" required />
+        <input
+          [(ngModel)]="newMeeting.title"
+          name="title"
+          class="form-control custom-input"
+          placeholder="Meeting Title"
+          required
+        />
       </div>
       <div class="col-md-3">
-        <input [(ngModel)]="newMeeting.description" name="description" class="form-control" placeholder="Description" />
+        <input
+          [(ngModel)]="newMeeting.description"
+          name="description"
+          class="form-control custom-input"
+          placeholder="Description"
+        />
       </div>
       <div class="col-md-3">
-        <input [(ngModel)]="newMeeting.scheduledAt" name="scheduledAt" type="datetime-local" class="form-control" required />
+        <input
+          [(ngModel)]="newMeeting.scheduledAt"
+          name="scheduledAt"
+          type="datetime-local"
+          class="form-control custom-input"
+          required
+        />
       </div>
       <div class="col-md-2">
-        <input [(ngModel)]="newMeeting.meetingLink" name="meetingLink" class="form-control" placeholder="Meeting Link" required />
+        <input
+          [(ngModel)]="newMeeting.meetingLink"
+          name="meetingLink"
+          class="form-control custom-input"
+          placeholder="Meeting Link"
+          required
+        />
       </div>
-      <div class="col-md-1">
-        <button class="btn btn-primary w-100">Add</button>
+      <div class="col-md-1 d-flex">
+        <button type="submit" class="btn btn-add w-100">➕ Add</button>
       </div>
     </div>
   </form>
 
   <!-- Meetings List -->
-  <table class="table table-bordered">
+  <table class=" custom-meetings-table shadow-sm mt-3" *ngIf="meetings.length > 0">
     <thead>
       <tr>
         <th>#</th>
@@ -38,15 +61,23 @@
     <tbody>
       <tr *ngFor="let m of meetings; index as i">
         <td>{{ i + 1 }}</td>
-        <td>{{ m.title }}</td>
+        <td class="fw-bold">{{ m.title }}</td>
         <td>{{ m.description }}</td>
-        <td>{{ m.createdAt | date:'short' }}</td>
-        <td>{{ m.scheduledAt | date:'short' }}</td>
-        <td><a [href]="m.meetingLink" target="_blank">Join</a></td>
+        <td>{{ m.createdAt | date: 'short' }}</td>
+        <td>{{ m.scheduledAt | date: 'short' }}</td>
         <td>
-          <button class="btn btn-danger btn-sm" (click)="deleteMeeting(m.id)">Delete</button>
+          <a [href]="m.meetingLink" target="_blank" class="btn-link">🔗 Join</a>
+        </td>
+        <td>
+          <button class="btn btn-delete btn-sm px-3" (click)="deleteMeeting(m.id)">
+            🗑 Delete
+          </button>
         </td>
       </tr>
     </tbody>
   </table>
+
+  <p *ngIf="meetings.length === 0" class="text-muted text-center mt-3">
+    ❌ No meetings scheduled yet.
+  </p>
 </div>

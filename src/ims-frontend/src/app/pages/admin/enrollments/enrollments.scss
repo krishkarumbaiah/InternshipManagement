@@ -1,0 +1,75 @@
+.enrollments-wrapper {
+  .text-gradient {
+    background: linear-gradient(90deg, #ff416c, #ff4b2b); 
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .total-badge {
+    background: linear-gradient(90deg, #007bff, #00c6ff);
+    color: #fff;
+    font-weight: 600;
+    border-radius: 8px;
+  }
+}
+
+:host ::ng-deep .p-datatable-enrollments {
+  border-radius: 12px;
+  overflow: hidden;
+  font-size: 0.95rem;
+  background: #fff;
+
+  .p-datatable-thead > tr > th {
+    background: linear-gradient(90deg, #b2aad4, #7c74d8) !important;
+    color: #fff !important;
+    font-weight: 700 !important;
+    text-align: center;
+    font-size: 1rem;
+    padding: 12px;
+  }
+
+  .p-datatable-tbody > tr > td {
+    text-align: center;
+    padding: 12px;
+    border: 1px solid #e5e7eb;
+    vertical-align: middle;
+  }
+
+  .p-datatable-tbody > tr:nth-child(odd) {
+    background: #fdf2f8; /* Light pink */
+  }
+
+  .p-datatable-tbody > tr:nth-child(even) {
+    background: #f0f9ff; /* Light blue */
+  }
+
+  .p-datatable-tbody > tr:hover {
+    background: #fffbea !important; /* Yellow highlight */
+    transition: 0.3s ease-in-out;
+  }
+
+  .filter-row input {
+    width: 100%;
+    padding: 6px 10px;
+    border: 1px solid #ced4da;
+    border-radius: 6px;
+    font-size: 0.9rem;
+  }
+
+  .course-badge {
+    background: linear-gradient(90deg, #28a745, #20c997); /* Green-Teal */
+    color: #fff;
+    font-weight: 600;
+    border-radius: 20px;
+    padding: 6px 14px;
+    font-size: 0.85rem;
+  }
+}
+
+/* Spinner */
+:host ::ng-deep .custom-spinner {
+  width: 60px !important;
+  height: 60px !important;
+  border-width: 6px !important;
+  color: #007bff;
+}

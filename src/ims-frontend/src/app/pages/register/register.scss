@@ -1,0 +1,48 @@
+.register-page {
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #74ebd5 0%, #9face6 100%);
+}
+
+.register-card {
+  border-radius: 12px;
+  width: 100%;
+  max-width: 400px;   
+  background: #fff;
+  padding: 20px;     
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+}
+
+
+.text-gradient {
+  background: linear-gradient(90deg, #2575fc, #6a11cb);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.btn-gradient {
+  background: linear-gradient(90deg, #6a11cb, #2575fc);
+  border: none;
+  color: #fff;
+  font-weight: 600;
+  padding: 10px;
+  border-radius: 6px;
+  transition: all 0.3s ease-in-out;
+
+  &:hover {
+    background: linear-gradient(90deg, #2575fc, #6a11cb);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  }
+}
+
+.input-group-text {
+  border-radius: 6px 0 0 6px;
+}
+
+.form-control,
+.form-select {
+  border-radius: 6px;
+}

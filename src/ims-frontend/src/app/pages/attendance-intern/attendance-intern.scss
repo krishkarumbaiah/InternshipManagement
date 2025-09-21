@@ -1,0 +1,74 @@
+/* Attendance Table */
+.custom-attendance-table {
+  width: 85%;
+  margin: 0 auto;
+  border-collapse: collapse;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.08);
+
+  thead tr {
+    background: linear-gradient(90deg, #007bff, #00c6ff);
+    color: #fff;
+    text-align: center;
+    font-weight: 600;
+    font-size: 0.95rem;
+  }
+
+  th,
+  td {
+    text-align: center;
+    padding: 10px 14px;
+    font-size: 0.9rem;
+    border: 1px solid #dee2e6;
+  }
+
+  tbody tr:nth-child(odd) {
+    background: #f8f9fa;
+  }
+
+  tbody tr:hover {
+    background: #e9f5ff;
+    transition: background 0.2s ease-in-out;
+  }
+}
+
+/* Status Badges */
+.status-badge.present {
+  background: #28a745;
+  color: #fff;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  box-shadow: 0 2px 6px rgba(40, 167, 69, 0.3);
+}
+
+.status-badge.absent {
+  background: #dc3545;
+  color: #fff;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  box-shadow: 0 2px 6px rgba(220, 53, 69, 0.3);
+}
+
+/* Paginator Styling */
+:host ::ng-deep .custom-paginator .p-paginator {
+  border-radius: 8px;
+  background: #ffffff;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.05);
+  padding: 6px 12px;
+}
+
+:host ::ng-deep .custom-paginator .p-paginator .p-paginator-page {
+  border-radius: 50%;
+  margin: 0 3px;
+  font-weight: 600;
+}
+
+:host ::ng-deep .custom-paginator .p-paginator .p-highlight {
+  background: #007bff !important;
+  color: #fff !important;
+}

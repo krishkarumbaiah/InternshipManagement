@@ -1,0 +1,58 @@
+<div class="container mt-4">
+  <h3 class="mb-4 text-primary fw-bold">📂 Manage Documents</h3>
+
+  <!-- If no documents -->
+  <div *ngIf="documents.length === 0" class="alert alert-info shadow-sm">
+    No documents uploaded yet.
+  </div>
+
+  <!-- PrimeNG Table with Pagination -->
+  <p-table
+    *ngIf="documents.length > 0"
+    [value]="documents"
+    [paginator]="true"
+    [rows]="5"
+    [rowsPerPageOptions]="[5, 10, 20]"
+    [responsiveLayout]="'scroll'"
+    class="custom-docs-table shadow-sm"
+  >
+    <ng-template pTemplate="header">
+      <tr>
+        <th>#</th>
+        <th>File Name</th>
+        <th>Uploaded By</th>
+        <th>Uploaded On</th>
+        <th>Actions</th>
+      </tr>
+    </ng-template>
+
+    <ng-template pTemplate="body" let-doc let-i="rowIndex">
+      <tr>
+        <td>{{ i + 1 }}</td>
+        <td class="fw-semibold">{{ doc.fileName }}</td>
+        <td>{{ doc.uploadedBy || 'Unknown' }}</td>
+        <td>{{ doc.uploadedAt ? (doc.uploadedAt | date : 'short') : '-' }}</td>
+        <td>
+          <button
+            class="btn btn-sm btn-success px-3 me-2"
+            (click)="downloadDocument(doc.id, doc.fileName)"
+          >
+            ⬇️ Download
+          </button>
+          <button
+            class="btn btn-sm btn-danger px-3"
+            (click)="deleteDocument(doc.id)"
+          >
+            🗑️ Delete
+          </button>
+        </td>
+      </tr>
+    </ng-template>
+
+    <ng-template pTemplate="emptymessage">
+      <tr>
+        <td colspan="5" class="text-center text-muted">❌ No documents found.</td>
+      </tr>
+    </ng-template>
+  </p-table>
+</div>

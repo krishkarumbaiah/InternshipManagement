@@ -1,12 +1,13 @@
-<div class="container mt-4">
-  <h3>Manage User Assignments</h3>
+<div class="container mt-4 assignments-wrapper">
+  <h2 class="page-title">👨‍🎓 Assign Interns to Batches</h2>
 
-  <!-- Form -->
-  <form (ngSubmit)="assignUser()" class="row g-3 mt-3">
+  <!-- Assignment Form -->
+  <form (ngSubmit)="assignUser()" class="row g-4 mt-4 assignment-form">
     <!-- User Dropdown -->
     <div class="col-md-4">
-      <select [(ngModel)]="selectedUser" name="user" class="form-select" required>
-        <option value="" disabled selected>Select User</option>
+      <label class="form-label fw-bold">Select Intern</label>
+      <select [(ngModel)]="selectedUser" name="user" class="form-select custom-select" required>
+        <option value="" disabled selected>-- Choose Intern --</option>
         <option *ngFor="let user of users" [value]="user.id">
           {{ user.userName }} ({{ user.email }})
         </option>
@@ -15,14 +16,15 @@
 
     <!-- Batch Dropdown -->
     <div class="col-md-4">
+      <label class="form-label fw-bold">Select Batch</label>
       <select
         [(ngModel)]="selectedBatch"
         name="batch"
-        class="form-select"
+        class="form-select custom-select"
         required
         (change)="loadAssignments(selectedBatch!)"
       >
-        <option value="" disabled selected>Select Batch</option>
+        <option value="" disabled selected>-- Choose Batch --</option>
         <option *ngFor="let batch of batches" [value]="batch.id">
           {{ batch.name }}
         </option>
@@ -30,13 +32,15 @@
     </div>
 
     <!-- Assign Button -->
-    <div class="col-md-2">
-      <button class="btn btn-primary w-100">Assign</button>
+    <div class="col-md-3 d-flex align-items-end">
+      <button type="submit" class="btn btn-assign w-100">
+        <i class="pi pi-plus-circle"></i> Assign User
+      </button>
     </div>
   </form>
 
   <!-- Assignments Table -->
-  <table class="table table-striped mt-4" *ngIf="assignments.length > 0">
+  <table class="table table-bordered table-hover mt-5 custom-assignment-table" *ngIf="assignments.length > 0">
     <thead>
       <tr>
         <th>#</th>
@@ -48,11 +52,11 @@
     <tbody>
       <tr *ngFor="let a of assignments; index as i">
         <td>{{ i + 1 }}</td>
-        <td>{{ a.userName }}</td>
+        <td class="fw-bold">{{ a.userName }}</td>
         <td>{{ a.batchName }}</td>
         <td>
-          <button (click)="unassignUser(a.id)" class="btn btn-danger btn-sm">
-            Unassign
+          <button (click)="unassignUser(a.id)" class="btn btn-unassign btn-sm">
+            <i class="pi pi-times-circle"></i> Unassign
           </button>
         </td>
       </tr>
@@ -60,7 +64,7 @@
   </table>
 
   <!-- No Assignments -->
-  <p *ngIf="assignments.length === 0 && selectedBatch" class="text-muted mt-3">
-    No users assigned to this batch.
+  <p *ngIf="assignments.length === 0 && selectedBatch" class="text-muted text-center mt-4">
+    ❌ No users assigned to this batch.
   </p>
 </div>

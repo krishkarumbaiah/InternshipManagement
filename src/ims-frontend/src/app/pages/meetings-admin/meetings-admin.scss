@@ -1,0 +1,106 @@
+/* === Wrapper === */
+.meetings-wrapper {
+  .page-title {
+    font-weight: 700;
+    font-size: 1.8rem;
+    color: #007bff;
+    border-bottom: 3px solid #00c6ff;
+    padding-bottom: 8px;
+    margin-bottom: 25px;
+    text-align: center;
+  }
+}
+
+/* === Form Styling === */
+.meeting-form {
+  background: #f8f9fa;
+  padding: 18px;
+  border-radius: 10px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+
+  .custom-input {
+    border: 2px solid #dee2e6;
+    border-radius: 6px;
+    padding: 10px;
+    transition: all 0.2s ease-in-out;
+
+    &:focus {
+      border-color: #007bff;
+      box-shadow: 0 0 6px rgba(0, 123, 255, 0.3);
+    }
+  }
+}
+
+/* === Table Styling (force apply with ::ng-deep) === */
+:host ::ng-deep .custom-meetings-table {
+  width: 100%;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid #dee2e6;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+
+  thead tr {
+    background: linear-gradient(90deg, #007bff, #00c6ff);
+    color: #fff;
+    text-transform: uppercase;
+    font-weight: 700;
+    font-size: 0.95rem;
+  }
+
+  th,
+  td {
+    text-align: center;
+    padding: 14px;
+    vertical-align: middle;
+  }
+
+  tbody tr:nth-child(odd) {
+    background-color: #f9fbfd;
+  }
+
+  tbody tr:hover {
+    background-color: #eef7ff;
+    transition: 0.25s ease-in-out;
+  }
+
+  .btn-link {
+    font-weight: 600;
+    color: #007bff;
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
+
+/* === Buttons === */
+.btn-add {
+  background: linear-gradient(90deg, #28a745, #20c997);
+  color: #fff !important;
+  font-weight: 600;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 14px;
+  transition: all 0.25s ease-in-out;
+
+  &:hover {
+    background: linear-gradient(90deg, #20c997, #28a745);
+    transform: translateY(-2px);
+  }
+}
+
+.btn-delete {
+  background: linear-gradient(90deg, #dc3545, #ff6b6b);
+  color: #fff !important;
+  font-weight: 600;
+  border: none;
+  border-radius: 6px;
+  padding: 6px 12px;
+  transition: all 0.25s ease-in-out;
+
+  &:hover {
+    background: linear-gradient(90deg, #ff6b6b, #dc3545);
+    transform: translateY(-2px);
+  }
+}

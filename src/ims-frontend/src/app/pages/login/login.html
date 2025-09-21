@@ -1,38 +1,88 @@
-<div class="container mt-5" style="max-width: 400px">
-  <div class="card shadow p-4">
-    <h3 class="mb-3 text-center">Login</h3>
+<div class="login-page d-flex justify-content-center align-items-center vh-100">
+  <div class="card login-card shadow-lg border-0">
+    <div class="card-body p-4">
+      <!-- Title -->
+      <h3 class="mb-2 text-center text-gradient fw-bold">✨ Welcome Back</h3>
+      <p class="text-center text-muted mb-4">Login to Internship Management Service 🚀</p>
 
-    <form [formGroup]="loginForm" (ngSubmit)="login()">
-      <div class="mb-3">
-        <label class="form-label">Username</label>
-        <input formControlName="userName" class="form-control" />
-        <small
-          *ngIf="loginForm.get('userName')?.touched && loginForm.get('userName')?.invalid"
-          class="text-danger"
+      <!-- Login Form -->
+      <form [formGroup]="loginForm" (ngSubmit)="login()">
+        <!-- Username -->
+        <div class="mb-3">
+          <label class="form-label fw-bold">Username</label>
+          <div class="input-group">
+            <span class="input-group-text bg-light"><i class="bi bi-person-fill"></i></span>
+            <input
+              type="text"
+              formControlName="userName"
+              class="form-control"
+              placeholder="Enter your username"
+            />
+          </div>
+          <small
+            *ngIf="loginForm.get('userName')?.touched && loginForm.get('userName')?.invalid"
+            class="text-danger"
+          >
+            Username is required
+          </small>
+        </div>
+
+        <!-- Password -->
+        <div class="mb-3">
+          <label class="form-label fw-bold">Password</label>
+          <div class="input-group">
+            <span class="input-group-text bg-light"><i class="bi bi-lock-fill"></i></span>
+            <input
+              [type]="showPassword ? 'text' : 'password'"
+              formControlName="password"
+              class="form-control"
+              placeholder="Enter your password"
+            />
+            <button
+              type="button"
+              class="btn btn-outline-secondary"
+              (click)="showPassword = !showPassword"
+            >
+              <i class="bi" [ngClass]="showPassword ? 'bi-eye-slash' : 'bi-eye'"></i>
+            </button>
+          </div>
+          <small
+            *ngIf="loginForm.get('password')?.touched && loginForm.get('password')?.invalid"
+            class="text-danger"
+          >
+            Password is required
+          </small>
+        </div>
+
+        <!-- Forgot Password -->
+        <div class="text-end mb-3">
+          <a routerLink="/forgot-password" class="text-decoration-none text-primary fw-semibold">
+            Forgot Password?
+          </a>
+        </div>
+
+        <!-- Login Button -->
+        <button
+          type="submit"
+          class="btn btn-gradient w-100 fw-semibold"
+          [disabled]="loginForm.invalid"
         >
-          Username is required
-        </small>
+          <i class="bi bi-box-arrow-in-right me-2"></i> Login
+        </button>
+      </form>
+
+      <!-- Divider -->
+      <div class="d-flex align-items-center my-3">
+        <hr class="flex-grow-1" />
+        <span class="mx-2 text-muted">OR</span>
+        <hr class="flex-grow-1" />
       </div>
 
-      <div class="mb-3">
-        <label class="form-label">Password</label>
-        <input formControlName="password" type="password" class="form-control" />
-        <small
-          *ngIf="loginForm.get('password')?.touched && loginForm.get('password')?.invalid"
-          class="text-danger"
-        >
-          Password is required
-        </small>
+      <!-- Register -->
+      <div class="text-center">
+        <span class="text-muted">Don't have an account?</span>
+        <a routerLink="/register" class="fw-bold text-gradient"> Register here</a>
       </div>
-
-      <button class="btn btn-primary w-100" [disabled]="loginForm.invalid">
-        Login
-      </button>
-    </form>
-
-    <div class="text-center mt-3">
-      <span>Don't have an account?</span>
-      <a routerLink="/register"> Register here</a>
     </div>
   </div>
 </div>

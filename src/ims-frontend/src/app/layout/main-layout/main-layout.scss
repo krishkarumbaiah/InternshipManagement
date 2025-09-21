@@ -1,0 +1,60 @@
+/* Navbar Styling */
+.custom-navbar {
+  background: linear-gradient(90deg, #0d6efd, #00c6ff);
+  padding: 0.7rem 1.2rem;
+}
+
+.navbar-brand {
+  font-size: 1.3rem;
+  letter-spacing: 0.5px;
+}
+
+.nav-link {
+  color: #f8f9fa !important;
+  margin: 0 6px;
+  transition: all 0.2s ease-in-out;
+
+  &:hover {
+    color: #ffe082 !important;
+    transform: translateY(-2px);
+  }
+}
+
+/* Search bar */
+.search-input {
+  border-radius: 20px;
+  padding: 6px 14px;
+  border: 1px solid #ced4da;
+  transition: all 0.2s ease-in-out;
+
+  &:focus {
+    border-color: #0d6efd;
+    box-shadow: 0 0 5px rgba(13, 110, 253, 0.5);
+  }
+}
+
+.btn-search {
+  background: #ffc107;
+  color: #212529;
+  border-radius: 20px;
+  font-weight: 600;
+
+  &:hover {
+    background: #e0a800;
+    color: #fff;
+  }
+}
+
+/* Logout button */
+.btn-logout {
+  background: #dc3545;
+  color: #fff;
+  border-radius: 20px;
+  font-weight: 600;
+  padding: 6px 14px;
+
+  &:hover {
+    background: #b02a37;
+    transform: translateY(-2px);
+  }
+}

@@ -1,86 +1,102 @@
-<div class="container mt-4">
-  <h2>Welcome, {{ username }} 👋</h2>
-  <p>Your role: <strong>{{ roles.join(', ') }}</strong></p>
+<div class="container mt-4 dashboard-wrapper">
+  <h2 class="text-center">Welcome, {{ username }} 👋</h2>
+  <p class="text-center">Your role: <strong>{{ roles.join(', ') }}</strong></p>
 
-  <!-- Admin Dashboard -->
+  <!-- ================= Admin Dashboard ================= -->
   <div *ngIf="isAdmin()" class="mt-4">
-    <h4>Admin Dashboard</h4>
+    <h3 class="text-primary text-center mb-4">📊 Admin Dashboard</h3>
 
-    <div *ngIf="overview; else adminLoading" class="row mt-3">
-      <div class="col-md-3 mb-3">
-        <div class="card text-white bg-primary shadow">
-          <div class="card-body">
-            <h5 class="card-title">Users</h5>
-            <p class="card-text fs-4">{{ overview.users.total }}</p>
+    <div *ngIf="overview; else adminLoading" class="row g-4">
+      <!-- Users Card -->
+      <div class="col-md-3">
+        <div class="card stat-card bg-primary text-white shadow">
+          <div class="card-body text-center">
+            <h5>Users</h5>
+            <p class="fs-3">{{ overview.users.total }}</p>
           </div>
         </div>
       </div>
 
-      <div class="col-md-3 mb-3">
-        <div class="card text-white bg-success shadow">
-          <div class="card-body">
-            <h5 class="card-title">Batches</h5>
-            <p class="card-text fs-4">{{ overview.batches }}</p>
+      <!-- Batches Card -->
+      <div class="col-md-3">
+        <div class="card stat-card bg-success text-white shadow">
+          <div class="card-body text-center">
+            <h5>Batches</h5>
+            <p class="fs-3">{{ overview.batches }}</p>
           </div>
         </div>
       </div>
 
-      <div class="col-md-3 mb-3">
-        <div class="card text-white bg-warning shadow">
-          <div class="card-body">
-            <h5 class="card-title">Questions</h5>
-            <p class="card-text fs-4">{{ overview.qnA.total }}</p>
-            <small class="text-dark">Unanswered: {{ overview.qnA.unanswered }}</small>
+      <!-- QnA Card -->
+      <div class="col-md-3">
+        <div class="card stat-card bg-warning text-dark shadow">
+          <div class="card-body text-center">
+            <h5>Questions</h5>
+            <p class="fs-3">{{ overview.qnA.total }}</p>
+            <small>Unanswered: {{ overview.qnA.unanswered }}</small>
           </div>
         </div>
       </div>
 
-      <div class="col-md-3 mb-3">
-        <div class="card text-white bg-danger shadow">
-          <div class="card-body">
-            <h5 class="card-title">Attendance</h5>
-            <p class="card-text fs-4">{{ overview.attendance.presentRate | number:'1.0-2' }}%</p>
-            <small class="text-light">Records: {{ overview.attendance.totalRecords }}</small>
+      <!-- Attendance Card -->
+      <div class="col-md-3">
+        <div class="card stat-card bg-danger text-white shadow">
+          <div class="card-body text-center">
+            <h5>Attendance</h5>
+            <p class="fs-3">{{ overview.attendance.presentRate | number:'1.0-2' }}%</p>
+            <small>Records: {{ overview.attendance.totalRecords }}</small>
           </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Charts Row -->
+    <div class="row mt-5">
+      <div class="col-md-6">
+        <div class="card shadow p-3">
+          <h6 class="text-center">📈 Attendance Overview</h6>
+          <canvas baseChart [data]="adminAttendanceChart" [type]="'doughnut'"></canvas>
+        </div>
+      </div>
+
+      <div class="col-md-6">
+        <div class="card shadow p-3">
+          <h6 class="text-center">👥 Users Overview</h6>
+          <canvas baseChart [data]="adminUsersChart" [type]="'bar'"></canvas>
         </div>
       </div>
     </div>
 
     <ng-template #adminLoading>
-      <p class="text-muted">Loading admin dashboard data...</p>
+      <p class="text-muted text-center">Loading admin dashboard data...</p>
     </ng-template>
   </div>
 
-  <!-- Intern Dashboard -->
+  <!-- ================= Intern Dashboard ================= -->
   <div *ngIf="isIntern()" class="mt-4">
-    <h4>Intern Dashboard</h4>
+    <h3 class="text-success text-center mb-4">🎓 Intern Dashboard</h3>
 
-    <div *ngIf="myOverview; else internLoading" class="row mt-3">
-      <div class="col-md-6 mb-3">
-        <div class="card text-white bg-info shadow">
-          <div class="card-body">
-            <h5 class="card-title">Attendance</h5>
-            <p class="card-text fs-4">{{ myOverview.attendance.presentRate | number:'1.0-2' }}%</p>
-            <small class="text-light">Present: {{ myOverview.attendance.presentDays }} / {{ myOverview.attendance.totalDays }}</small>
-          </div>
+    <div *ngIf="myOverview; else internLoading" class="row g-4">
+      <!-- Attendance -->
+      <div class="col-md-6">
+        <div class="card shadow p-3">
+          <h6 class="text-center">Attendance</h6>
+          <canvas baseChart [data]="internAttendanceChart" [type]="'doughnut'"></canvas>
         </div>
       </div>
 
-      <div class="col-md-6 mb-3">
-        <div class="card text-white bg-secondary shadow">
-          <div class="card-body">
-            <h5 class="card-title">QnA</h5>
-            <p class="card-text fs-4">{{ myOverview.questions.total }} asked</p>
-            <small class="text-light">Answered: {{ myOverview.questions.answered }} | Unanswered: {{ myOverview.questions.unanswered }}</small>
-          </div>
+      <!-- QnA -->
+      <div class="col-md-6">
+        <div class="card shadow p-3">
+          <h6 class="text-center">QnA</h6>
+          <canvas baseChart [data]="internQnaChart" [type]="'bar'"></canvas>
         </div>
       </div>
     </div>
 
     <ng-template #internLoading>
-      <p class="text-muted">Loading intern dashboard data...</p>
+      <p class="text-muted text-center">Loading intern dashboard data...</p>
     </ng-template>
   </div>
 
-  <button class="btn btn-danger mt-4" (click)="logout()">Logout</button>
-</div>
+ 

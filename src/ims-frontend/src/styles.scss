@@ -1,1 +1,226 @@
-/* You can add global styles to this file, and also import other style files */
+/* ========================= */
+/*  Light/Dark Theme Setup   */
+/* ========================= */
+:root {
+  /* Global */
+  --bg-color: #ffffff;
+  --text-color: #212529;
+  --card-bg: #ffffff;
+  --card-border: #ddd;
+  --link-color: #007bff;
+  --link-hover: #0056b3;
+
+  /* Navbar */
+  --navbar-bg: linear-gradient(135deg, #f30049, #6a11cb);
+  --navbar-text: #ffffff;
+  --navbar-hover: #ffd700;
+  --navbar-link: #f0f0f0;
+  --navbar-btn-bg: #ffffff;
+  --navbar-btn-text: #2575fc;
+  --navbar-btn-hover-bg: #ffd700;
+  --navbar-btn-hover-text: #000000;
+}
+
+.dark-theme {
+  /* Global */
+  --bg-color: #121212;
+  --text-color: #e0e0e0;
+  --card-bg: #1e1e1e;
+  --card-border: #333;
+  --link-color: #90caf9;
+  --link-hover: #bbdefb;
+
+  /* Navbar */
+  --navbar-bg: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+  --navbar-text: #e0e0e0;
+  --navbar-hover: #90caf9;
+  --navbar-link: #b0bec5;
+  --navbar-btn-bg: #2c5364;
+  --navbar-btn-text: #ffffff;
+  --navbar-btn-hover-bg: #90caf9;
+  --navbar-btn-hover-text: #000;
+}
+
+/* ========================= */
+/* Global Page Styles        */
+/* ========================= */
+body {
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+/* Links */
+a {
+  color: var(--link-color);
+  transition: color 0.3s;
+}
+a:hover {
+  color: var(--link-hover);
+}
+
+/* Cards / Containers */
+.card {
+  background-color: var(--card-bg);
+  border: 1px solid var(--card-border);
+  color: var(--text-color);
+  transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+}
+
+/* Tables */
+.table {
+  color: var(--text-color);
+}
+.table th,
+.table td {
+  background-color: var(--card-bg);
+  border-color: var(--card-border);
+}
+
+/* Forms */
+input, select, textarea {
+  background-color: var(--card-bg);
+  color: var(--text-color);
+  border: 1px solid var(--card-border);
+}
+input:focus, select:focus, textarea:focus {
+  outline: none;
+  border-color: var(--navbar-hover);
+  box-shadow: 0 0 5px var(--navbar-hover);
+}
+
+/* ========================= */
+/* Navbar Styles             */
+/* ========================= */
+.navbar {
+  background: var(--navbar-bg) !important;
+  padding: 12px 25px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+  border-radius: 12px;
+  backdrop-filter: blur(8px);
+  position: relative;
+  z-index: 1000;
+  transition: all 0.3s ease;
+}
+
+.navbar-brand {
+  font-weight: bold;
+  font-size: 1.6rem;
+  color: var(--navbar-text) !important;
+  text-shadow: 1px 2px 6px rgba(0,0,0,0.3);
+}
+
+.navbar-nav .nav-link {
+  color: var(--navbar-link) !important;
+  margin: 0 10px;
+  font-weight: 500;
+  padding: 6px 10px;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+.navbar-nav .nav-link:hover {
+  color: var(--navbar-hover) !important;
+  background: rgba(255, 255, 255, 0.1);
+  transform: translateY(-2px) scale(1.05);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+
+.navbar-nav .nav-link.active {
+  color: var(--navbar-hover) !important;
+  font-weight: 600;
+  text-shadow: 0 0 5px var(--navbar-hover);
+}
+
+.navbar .btn {
+  border-radius: 25px;
+  padding: 8px 18px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  background: var(--navbar-btn-bg);
+  color: var(--navbar-btn-text);
+  border: none;
+  cursor: pointer;
+  transition: all 0.25s ease-in-out;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.navbar .btn:hover {
+  transform: translateY(-4px) scale(1.08);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+  background: var(--navbar-btn-hover-bg);
+  color: var(--navbar-btn-hover-text);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .navbar {
+    padding: 15px 20px;
+    border-radius: 10px;
+  }
+  .navbar-nav .nav-link {
+    margin: 5px 0;
+    display: block;
+    text-align: center;
+  }
+  .navbar .btn {
+    width: 100%;
+    margin-top: 8px;
+  }
+}
+
+/* ========================= */
+/* Toastr Custom Styling     */
+/* ========================= */
+.toast-container {
+  font-family: 'Segoe UI', sans-serif;
+  font-size: 1.05rem;   /* bigger font */
+}
+
+.toast-success,
+.toast-error,
+.toast-warning,
+.toast-info {
+  min-width: 320px !important;  /* wider */
+  max-width: 420px !important;  /* prevent from being too wide */
+  padding: 18px 20px !important; /* more padding */
+  border-radius: 10px !important;
+  font-size: 1.05rem !important; /* slightly bigger text */
+  font-weight: 500 !important;
+}
+
+/* Success */
+.toast-success {
+  background: linear-gradient(90deg, #28a745, #20c997) !important;
+  color: #fff !important;
+  box-shadow: 0 6px 16px rgba(40, 167, 69, 0.4) !important;
+}
+
+/* Error */
+.toast-error {
+  background: linear-gradient(90deg, #dc3545, #ff6b6b) !important;
+  color: #fff !important;
+  box-shadow: 0 6px 16px rgba(220, 53, 69, 0.4) !important;
+}
+
+/* Warning */
+.toast-warning {
+  background: linear-gradient(90deg, #ffc107, #ff9800) !important;
+  color: #212529 !important;
+  box-shadow: 0 6px 16px rgba(255, 193, 7, 0.4) !important;
+}
+
+/* Info */
+.toast-info {
+  background: linear-gradient(90deg, #17a2b8, #0dcaf0) !important;
+  color: #fff !important;
+  box-shadow: 0 6px 16px rgba(23, 162, 184, 0.4) !important;
+}
+
+/* Position adjustment */
+.toast-top-right {
+  top: 90px !important; /* a little lower below navbar */
+  right: 25px !important;
+}

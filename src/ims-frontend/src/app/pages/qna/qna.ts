@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environments/environment';
 import { ToastrService } from 'ngx-toastr';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-qna',
@@ -81,16 +82,29 @@ export class QnaComponent implements OnInit {
     this.editedText = '';
   }
 
-  // Delete own question
-  deleteQuestion(id: number) {
-    if (!confirm('Are you sure you want to delete this question?')) return;
-    this.http.delete(`${environment.apiUrl}/qna/${id}`).subscribe({
-      next: () => {
-        this.toastr.info('Question deleted');
-        this.loadMyQuestions();
-        this.loadAllQuestions();
-      },
-      error: () => this.toastr.error('Failed to delete question')
-    });
-  }
+ // Delete own question with SweetAlert2
+deleteQuestion(id: number) {
+  Swal.fire({
+    title: 'Are you sure?',
+    text: 'This question will be permanently deleted!',
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#dc3545',
+    cancelButtonColor: '#6c757d',
+    confirmButtonText: 'Yes, delete it!',
+    cancelButtonText: 'Cancel'
+  }).then((result) => {
+    if (result.isConfirmed) {
+      this.http.delete(`${environment.apiUrl}/qna/${id}`).subscribe({
+        next: () => {
+          this.toastr.info('Question deleted 🗑️');
+          this.loadMyQuestions();
+          this.loadAllQuestions();
+        },
+        error: () => this.toastr.error('Failed to delete question ❌')
+      });
+    }
+  });
+}
+
 }

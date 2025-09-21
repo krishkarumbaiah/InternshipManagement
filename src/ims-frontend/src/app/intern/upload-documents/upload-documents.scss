@@ -1,0 +1,50 @@
+/* Documents Table */
+.custom-docs-table {
+  width: 85%;
+  margin: 0 auto;
+  border-collapse: collapse;
+  border-radius: 8px;
+  overflow: hidden;
+  font-size: 0.85rem;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.08);
+
+  thead tr {
+    background: linear-gradient(90deg, #6a11cb, #2575fc);
+    color: #fff;
+    text-align: center;
+    font-size: 0.9rem;
+    font-weight: 600;
+  }
+
+  th,
+  td {
+    text-align: center;
+    padding: 10px;
+    border: 1px solid #dee2e6;
+  }
+
+  tbody tr:nth-child(odd) {
+    background: #f8f9fa;
+  }
+
+  tbody tr:nth-child(even) {
+    background: #f1f7ff;
+  }
+
+  tbody tr:hover {
+    background: #e1f0ff;
+    transition: background 0.2s ease-in-out;
+  }
+}
+
+/* Action Buttons */
+button {
+  border-radius: 4px;
+  font-size: 0.8rem;
+  transition: all 0.2s ease-in-out;
+
+  &:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  }
+}

@@ -1,0 +1,36 @@
+.login-page {
+  background: linear-gradient(135deg, #74ebd5 0%, #9face6 100%);
+}
+
+.login-card {
+  width: 360px; /* Compact card size */
+  border-radius: 14px;
+  background: #fff;
+  padding: 20px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+}
+
+.text-gradient {
+  background: linear-gradient(90deg, #007bff, #6f42c1);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.btn-gradient {
+  background: linear-gradient(90deg, #007bff, #6f42c1);
+  color: #fff;
+  border: none;
+  padding: 10px 0;
+  border-radius: 6px;
+  transition: all 0.3s ease-in-out;
+
+  &:hover {
+    background: linear-gradient(90deg, #6f42c1, #007bff);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  }
+}
+
+.input-group-text {
+  border-radius: 6px 0 0 6px;
+}

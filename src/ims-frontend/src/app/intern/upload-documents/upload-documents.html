@@ -1,0 +1,53 @@
+<div class="container mt-4">
+  <h3 class="mb-4 text-primary fw-bold">📄 My Uploaded Documents</h3>
+
+  <!-- Upload Form -->
+  <div class="card shadow-sm mb-4 p-3">
+    <div class="d-flex align-items-center gap-3">
+      <input
+        type="file"
+        (change)="onFileSelected($event)"
+        class="form-control"
+      />
+      <button
+        class="btn btn-success"
+        [disabled]="!selectedFile"
+        (click)="upload()"
+      >
+        ⬆️ Upload
+      </button>
+    </div>
+  </div>
+
+  <!-- If no documents -->
+  <div *ngIf="myDocuments.length === 0" class="alert alert-info shadow-sm">
+    You haven’t uploaded any documents yet.
+  </div>
+
+  <!-- Documents Table -->
+  <table *ngIf="myDocuments.length > 0" class="custom-docs-table shadow-sm">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>File Name</th>
+        <th>Uploaded On</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let doc of myDocuments; let i = index">
+        <td>{{ i + 1 }}</td>
+        <td class="fw-semibold">{{ doc.fileName }}</td>
+        <td>{{ doc.uploadedAt | date: 'short' }}</td>
+        <td>
+          <button
+            class="btn btn-sm btn-danger px-3"
+            (click)="deleteDocument(doc.id)"
+          >
+            🗑 Delete
+          </button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

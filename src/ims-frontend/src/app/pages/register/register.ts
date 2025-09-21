@@ -14,6 +14,7 @@ import { ToastrService } from 'ngx-toastr';
 })
 export class RegisterComponent {
   registerForm: FormGroup;
+  otpSent = false;
 
   constructor(
     private fb: FormBuilder,
@@ -26,13 +27,39 @@ export class RegisterComponent {
       username: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(6)]],
-      role: ['Intern', Validators.required] // Default role
+      role: ['Intern', Validators.required],
+      otp: ['', Validators.required]   
     });
   }
 
+  //  Send OTP
+  sendOtp() {
+    const email = this.registerForm.get('email')?.value;
+    if (!email) {
+      this.toastr.warning('Please enter a valid email first');
+      return;
+    }
+
+    this.auth.sendOtp(email).subscribe({
+      next: () => {
+        this.toastr.success('✅ OTP sent to your email 📧', 'Success');
+        this.otpSent = true;
+        this.registerForm.get('otp')?.setValidators([Validators.required]);
+        this.registerForm.get('otp')?.updateValueAndValidity();
+      },
+      error: () => this.toastr.error('❌ Failed to send OTP')
+    });
+  }
+
+  //  Submit with OTP verification
   onSubmit() {
     if (this.registerForm.invalid) {
       this.toastr.warning('Please fill all required fields correctly');
+      return;
+    }
+
+    if (!this.registerForm.value.otp) {
+      this.toastr.warning('Please enter the OTP sent to your email');
       return;
     }
 
@@ -41,8 +68,8 @@ export class RegisterComponent {
         this.toastr.success('Registration successful 🎉');
         this.router.navigate(['/login']);
       },
-      error: () => {
-        this.toastr.error('Failed to register. Try again.');
+      error: (err) => {
+        this.toastr.error(err.error?.message || 'Failed to register. Try again.');
       }
     });
   }

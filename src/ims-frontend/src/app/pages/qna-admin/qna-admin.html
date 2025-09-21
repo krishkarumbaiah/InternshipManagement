@@ -1,8 +1,17 @@
-<div class="container mt-4">
-  <h3>QnA Management</h3>
+<div class="qna-wrapper container mt-4">
+  <h3 class="page-title text-primary fw-bold">💬 QnA Management</h3>
 
-  <table class="table table-bordered mt-3" *ngIf="qna.length > 0">
-    <thead>
+  <!-- PrimeNG Table -->
+  <p-table
+    *ngIf="qna.length > 0"
+    [value]="qna"
+    [paginator]="true"
+    [rows]="5"
+    [rowsPerPageOptions]="[5, 10, 20]"
+    [responsiveLayout]="'scroll'"
+    class="custom-qna-table shadow-sm mt-3"
+  >
+    <ng-template pTemplate="header">
       <tr>
         <th>#</th>
         <th>Question</th>
@@ -10,76 +19,47 @@
         <th>Answer</th>
         <th>Actions</th>
       </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let item of qna; index as i">
-        <td>{{ i + 1 }}</td>
-        <td>{{ item.text }}</td>
-        <td>{{ item.userName }}</td>
+    </ng-template>
 
-        <!-- ✅ Answer Section -->
+    <ng-template pTemplate="body" let-item let-i="rowIndex">
+      <tr>
+        <td>{{ i + 1 }}</td>
+        <td class="fw-semibold">{{ item.text }}</td>
+        <td>{{ item.userName }}</td>
         <td>
-          <!-- Edit mode for answers -->
+          <!-- Edit mode -->
           <div *ngIf="editAnswerId === item.id; else viewAnswer">
-            <input
-              type="text"
-              class="form-control mb-2"
-              [(ngModel)]="editAnswerText"
-            />
-            <button
-              class="btn btn-primary btn-sm me-2"
-              (click)="updateAnswer(item.id)"
-            >
-              Save
-            </button>
-            <button
-              class="btn btn-secondary btn-sm"
-              (click)="cancelEditAnswer()"
-            >
-              Cancel
-            </button>
+            <input type="text" class="form-control mb-2" [(ngModel)]="editAnswerText" />
+            <button class="btn btn-update btn-sm me-2" (click)="updateAnswer(item.id)">💾 Save</button>
+            <button class="btn btn-cancel btn-sm" (click)="cancelEditAnswer()">❌ Cancel</button>
           </div>
 
           <!-- Normal view -->
           <ng-template #viewAnswer>
             <div *ngIf="item.answer; else noAnswer">
-              {{ item.answer }}
-              <button
-                class="btn btn-link btn-sm p-0 ms-2"
-                (click)="startEditAnswer(item)"
-              >
+              <span class="answer-text">{{ item.answer }}</span>
+              <button class="btn btn-link btn-sm p-0 ms-2 edit-link" (click)="startEditAnswer(item)">
                 ✏️ Edit
               </button>
             </div>
             <ng-template #noAnswer>
-              <input
-                type="text"
-                class="form-control mb-2"
-                placeholder="Enter answer"
-                #answerInput
-              />
-              <button
-                class="btn btn-success btn-sm"
-                (click)="answerQuestion(item.id, answerInput.value)"
-              >
-                Submit
+              <input type="text" class="form-control mb-2" placeholder="Enter answer" #answerInput />
+              <button class="btn btn-submit btn-sm" (click)="answerQuestion(item.id, answerInput.value)">
+                ✅ Submit
               </button>
             </ng-template>
           </ng-template>
         </td>
-
-        <!-- ✅ Delete action -->
         <td>
-          <button
-            class="btn btn-danger btn-sm"
-            (click)="deleteQuestion(item.id)"
-          >
-            Delete
-          </button>
+          <button class="btn btn-delete btn-sm" (click)="deleteQuestion(item.id)">🗑️ Delete</button>
         </td>
       </tr>
-    </tbody>
-  </table>
+    </ng-template>
 
-  <p *ngIf="qna.length === 0" class="text-muted">No questions yet.</p>
+    <ng-template pTemplate="emptymessage">
+      <tr>
+        <td colspan="5" class="text-center text-muted">❌ No questions found.</td>
+      </tr>
+    </ng-template>
+  </p-table>
 </div>

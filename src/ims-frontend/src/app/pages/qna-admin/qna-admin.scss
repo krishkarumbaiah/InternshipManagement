@@ -1,0 +1,135 @@
+.qna-wrapper {
+  .page-title {
+    font-weight: 700;
+    font-size: 1.5rem;
+    color: #007bff;
+    border-bottom: 3px solid #00c6ff;
+    padding-bottom: 6px;
+    margin-bottom: 18px;
+    text-align: center;
+    letter-spacing: 0.5px;
+  }
+
+  /* QnA Table */
+  .custom-qna-table {
+    width: 95%;
+    margin: 0 auto;
+    border-radius: 8px;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+
+    thead tr {
+      background: linear-gradient(90deg, #007bff, #00c6ff);
+      color: #fff;
+      text-transform: uppercase;
+      font-weight: 700;
+      font-size: 0.95rem;
+      letter-spacing: 0.5px;
+    }
+
+    th,
+    td {
+      text-align: center;
+      padding: 12px;
+      vertical-align: middle;
+      border: 1px solid #dee2e6;
+    }
+
+    .question-col {
+      font-weight: 600;
+      text-align: left;
+      color: #212529;
+      max-width: 350px;
+      word-wrap: break-word;
+    }
+
+    tbody tr:nth-child(odd) {
+      background-color: #f9fbfd;
+    }
+
+    tbody tr:nth-child(even) {
+      background-color: #ffffff;
+    }
+
+    tbody tr:hover {
+      background-color: #e9f5ff;
+      transition: background 0.2s ease-in-out;
+    }
+
+    .answer-text {
+      font-weight: 500;
+      color: #2c3e50;
+    }
+
+    .edit-link {
+      color: #007bff;
+      font-weight: 600;
+      text-decoration: none;
+      cursor: pointer;
+
+      &:hover {
+        text-decoration: underline;
+        color: #0056b3;
+      }
+    }
+  }
+
+  /* Buttons */
+  .btn-submit {
+    background: linear-gradient(90deg, #28a745, #20c997);
+    color: #fff !important;
+    font-weight: 600;
+    border-radius: 5px;
+    border: none;
+    padding: 4px 10px;
+    transition: 0.2s;
+  }
+  .btn-submit:hover {
+    background: linear-gradient(90deg, #20c997, #28a745);
+    transform: translateY(-1px);
+  }
+
+  .btn-update {
+    background: linear-gradient(90deg, #007bff, #0dcaf0);
+    color: #fff !important;
+    font-weight: 600;
+    border-radius: 5px;
+    border: none;
+    padding: 4px 10px;
+    transition: 0.2s;
+  }
+  .btn-update:hover {
+    background: linear-gradient(90deg, #0dcaf0, #007bff);
+    transform: translateY(-1px);
+  }
+
+  .btn-cancel {
+    background: linear-gradient(90deg, #ffc107, #ff9800);
+    color: #212529 !important;
+    font-weight: 600;
+    border-radius: 5px;
+    border: none;
+    padding: 4px 10px;
+    transition: 0.2s;
+  }
+  .btn-cancel:hover {
+    background: linear-gradient(90deg, #ff9800, #ffc107);
+    transform: translateY(-1px);
+  }
+
+  .btn-delete {
+    background: linear-gradient(90deg, #dc3545, #ff6b6b);
+    color: #fff !important;
+    font-weight: 600;
+    border-radius: 5px;
+    border: none;
+    padding: 4px 10px;
+    transition: 0.2s;
+  }
+  .btn-delete:hover {
+    background: linear-gradient(90deg, #ff6b6b, #dc3545);
+    transform: translateY(-1px);
+  }
+}

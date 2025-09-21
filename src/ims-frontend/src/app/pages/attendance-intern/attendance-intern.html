@@ -1,28 +1,45 @@
 <div class="container mt-4">
-  <h3>My Attendance</h3>
+  <h3 class="mb-4 text-primary fw-bold">📊 My Attendance</h3>
 
-  <table class="table table-striped mt-3" *ngIf="attendance.length > 0; else noAttendance">
+  <!-- Attendance Table -->
+  <table
+    class="custom-attendance-table shadow-sm"
+    *ngIf="attendance.length > 0; else noAttendance"
+  >
     <thead>
       <tr>
+        <th>#</th>
         <th>Date</th>
         <th>Batch</th>
         <th>Status</th>
       </tr>
     </thead>
     <tbody>
-      <tr *ngFor="let record of attendance">
+      <tr *ngFor="let record of pagedAttendance; index as i">
+        <td>{{ page * rows + i + 1 }}</td>
         <td>{{ record.date | date: 'yyyy-MM-dd' }}</td>
-        <td>{{ record.batchName }}</td>
+        <td class="fw-semibold">{{ record.batchName }}</td>
         <td>
-          <span [class.text-success]="record.isPresent" [class.text-danger]="!record.isPresent">
-            {{ record.isPresent ? 'Present' : 'Absent' }}
-          </span>
+          <span class="status-badge present" *ngIf="record.isPresent">✔ Present</span>
+          <span class="status-badge absent" *ngIf="!record.isPresent">❌ Absent</span>
         </td>
       </tr>
     </tbody>
   </table>
 
+  <!-- PrimeNG Paginator -->
+  <p-paginator
+    [rows]="rows"
+    [totalRecords]="attendance.length"
+    [rowsPerPageOptions]="[5, 10, 20]"
+    (onPageChange)="onPageChange($event)"
+    styleClass="custom-paginator mt-3 justify-content-center"
+  ></p-paginator>
+
+  <!-- No Attendance Fallback -->
   <ng-template #noAttendance>
-    <p class="text-muted">No attendance records found.</p>
+    <div class="alert alert-info text-center shadow-sm">
+      No attendance records found.
+    </div>
   </ng-template>
 </div>

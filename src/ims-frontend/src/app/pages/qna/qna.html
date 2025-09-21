@@ -1,25 +1,25 @@
-<div class="container mt-4">
-  <h3>QnA (Intern)</h3>
+<div class="container mt-4 qna-wrapper">
+  <h2 class="page-title">💬 QnA</h2>
 
   <!-- Ask Question -->
-  <form (ngSubmit)="askQuestion()" class="mb-3">
+  <form (ngSubmit)="askQuestion()" class="mb-4 ask-form">
     <div class="input-group">
       <input
         type="text"
         [(ngModel)]="newQuestion"
         name="question"
-        class="form-control"
-        placeholder="Type your question..."
+        class="form-control custom-input"
+        placeholder="✍️ Type your question..."
         required
       />
-      <button class="btn btn-primary">Ask</button>
+      <button class="btn btn-ask">Ask</button>
     </div>
   </form>
 
   <!-- My Questions -->
-  <h5>My Questions</h5>
-  <ul class="list-group mb-4" *ngIf="myQuestions.length > 0; else noMyQ">
-    <li class="list-group-item" *ngFor="let q of myQuestions">
+  <h4 class="section-title">🙋 My Questions</h4>
+  <ul class="list-group mb-4 custom-list" *ngIf="myQuestions.length > 0; else noMyQ">
+    <li class="list-group-item qna-item" *ngFor="let q of myQuestions">
       
       <!-- Editing Mode -->
       <div *ngIf="editingQuestionId === q.id; else viewMode">
@@ -29,33 +29,21 @@
           name="editText"
           class="form-control mb-2"
         />
-        <button class="btn btn-success btn-sm me-2" (click)="saveEdit(q.id)">
-          Save
-        </button>
-        <button class="btn btn-secondary btn-sm" (click)="cancelEdit()">
-          Cancel
-        </button>
+        <button class="btn btn-save me-2 btn-sm" (click)="saveEdit(q.id)">💾 Save</button>
+        <button class="btn btn-cancel btn-sm" (click)="cancelEdit()">❌ Cancel</button>
       </div>
 
       <!-- Normal View -->
       <ng-template #viewMode>
-        <strong>{{ q.text }}</strong>
-        <div *ngIf="q.answer" class="text-success">Answer: {{ q.answer }}</div>
+        <p class="question-text"><strong>{{ q.text }}</strong></p>
+        <div *ngIf="q.answer" class="answer-text">✅ Answer: {{ q.answer }}</div>
         <div class="text-muted small">{{ q.createdAt | date:'short' }}</div>
 
         <!-- Edit / Delete Buttons -->
-        <button
-          class="btn btn-warning btn-sm me-2 mt-1"
-          (click)="startEdit(q)"
-        >
-          Edit
-        </button>
-        <button
-          class="btn btn-danger btn-sm mt-1"
-          (click)="deleteQuestion(q.id)"
-        >
-          Delete
-        </button>
+        <div class="mt-2">
+          <button class="btn btn-edit btn-sm me-2" (click)="startEdit(q)">✏️ Edit</button>
+          <button class="btn btn-delete btn-sm" (click)="deleteQuestion(q.id)">🗑 Delete</button>
+        </div>
       </ng-template>
     </li>
   </ul>
@@ -64,11 +52,11 @@
   </ng-template>
 
   <!-- All Questions -->
-  <h5>All Questions</h5>
-  <ul class="list-group" *ngIf="allQuestions.length > 0; else noQ">
-    <li class="list-group-item" *ngFor="let q of allQuestions">
-      <strong>{{ q.userName }}:</strong> {{ q.text }}
-      <div *ngIf="q.answer" class="text-success">Answer: {{ q.answer }}</div>
+  <h4 class="section-title">🌍 All Questions</h4>
+  <ul class="list-group custom-list" *ngIf="allQuestions.length > 0; else noQ">
+    <li class="list-group-item qna-item" *ngFor="let q of allQuestions">
+      <p><strong class="username">{{ q.userName }}</strong>: {{ q.text }}</p>
+      <div *ngIf="q.answer" class="answer-text">✅ Answer: {{ q.answer }}</div>
     </li>
   </ul>
   <ng-template #noQ>

@@ -1,0 +1,132 @@
+.attendance-wrapper {
+  .page-title {
+    font-weight: 700;
+    font-size: 1.8rem;
+    color: #007bff;
+    text-align: center;
+    margin-bottom: 25px;
+  }
+  
+
+  /* === Controls Styling === */
+  .attendance-controls {
+    background: #f8f9fa;
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+
+    label {
+      color: #212529;
+      font-size: 0.95rem;
+    }
+
+    .custom-select,
+    .custom-date {
+      border: 2px solid #dee2e6;
+      border-radius: 6px;
+      padding: 8px;
+      transition: all 0.2s ease-in-out;
+
+      &:focus {
+        border-color: #007bff;
+        box-shadow: 0 0 6px rgba(0, 123, 255, 0.3);
+      }
+    }
+  }
+
+  /* === Mark Attendance Table === */
+  .custom-attendance-table {
+    border-radius: 8px;
+    overflow: hidden;
+    font-size: 0.95rem;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+
+    thead tr {
+      background: linear-gradient(90deg, #4facfe, #00f2fe);
+      color: #fff;
+      text-transform: uppercase;
+      font-weight: 700;
+      text-align: center;
+    }
+
+    th,
+    td {
+      text-align: center;
+      vertical-align: middle;
+      padding: 12px;
+    }
+
+    tbody tr:nth-child(odd) {
+      background-color: #f9fbff;
+    }
+
+    tbody tr:nth-child(even) {
+      background-color: #eef6ff;
+    }
+
+    tbody tr:hover {
+      background-color: #e2f0ff;
+      transition: background 0.2s ease-in-out;
+    }
+  }
+
+  /* === Save Button === */
+  .btn-save {
+    background: linear-gradient(90deg, #28a745, #20c997);
+    color: #fff;
+    font-weight: 600;
+    border: none;
+    border-radius: 6px;
+    padding: 10px 20px;
+    transition: all 0.25s ease-in-out;
+
+    &:hover {
+      background: linear-gradient(90deg, #20c997, #28a745);
+      transform: translateY(-2px);
+    }
+  }
+
+  /* === Attendance History Table === */
+  .table {
+    border-radius: 10px;
+    overflow: hidden;
+    font-size: 0.9rem;
+
+    thead {
+      background: linear-gradient(90deg, #6a11cb, #2575fc);
+      color: #fff;
+      text-transform: uppercase;
+      font-weight: 700;
+    }
+
+    tbody tr:nth-child(odd) {
+      background: #f8f9fa;
+    }
+
+    tbody tr:nth-child(even) {
+      background: #eef4ff;
+    }
+
+    tbody tr:hover {
+      background: #e1f0ff;
+      transition: 0.3s ease-in-out;
+    }
+  
+  }
+
+  /* === Badges === */
+  .badge {
+    font-size: 0.85rem;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-weight: 600;
+
+    &.bg-success {
+      background: linear-gradient(90deg, #28a745, #20c997);
+    }
+
+    &.bg-danger {
+      background: linear-gradient(90deg, #dc3545, #ff6b6b);
+    }
+  }
+}
