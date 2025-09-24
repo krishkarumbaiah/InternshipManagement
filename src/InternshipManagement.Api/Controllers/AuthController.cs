@@ -9,6 +9,9 @@ using Microsoft.IdentityModel.Tokens;
 using InternshipManagement.Api.Models.DTOs;
 using InternshipManagement.Api.Services;
 using System.Text.Encodings.Web;
+using Microsoft.AspNetCore.Http;
+using System.IO;
+using System.Linq;
 
 namespace InternshipManagement.Api.Controllers
 {
@@ -17,20 +20,23 @@ namespace InternshipManagement.Api.Controllers
     public class AuthController : ControllerBase
     {
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly RoleManager<IdentityRole<int>> _roleManager;
         private readonly IConfiguration _config;
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly IAppEmailSender _emailSender;
 
-        // 🔹 In-memory OTP store (email → otp + expiry)
+        // in-memory OTP store (small projects only)
         private static readonly Dictionary<string, (string Otp, DateTime Expiry)> _otpStore = new();
 
         public AuthController(
             UserManager<ApplicationUser> userManager,
+            RoleManager<IdentityRole<int>> roleManager,
             SignInManager<ApplicationUser> signInManager,
             IConfiguration config,
             IAppEmailSender emailSender)
         {
             _userManager = userManager;
+            _roleManager = roleManager;
             _config = config;
             _signInManager = signInManager;
             _emailSender = emailSender;
@@ -55,11 +61,12 @@ namespace InternshipManagement.Api.Controllers
             return Ok(new { message = "OTP sent successfully" });
         }
 
-        // 🔹 2. Register with OTP verification
+        // 🔹 2. Register with OTP verification + optional profile photo
         [HttpPost("register")]
-        public async Task<IActionResult> Register([FromBody] RegisterDto model)
+        public async Task<IActionResult> Register([FromForm] RegisterDto model)
         {
-            if (!ModelState.IsValid) return BadRequest(ModelState);
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
 
             // OTP Validation
             if (!_otpStore.ContainsKey(model.Email) ||
@@ -69,24 +76,113 @@ namespace InternshipManagement.Api.Controllers
                 return BadRequest(new { message = "Invalid or expired OTP" });
             }
 
+            // Pre-checks
+            if (await _userManager.FindByNameAsync(model.UserName) != null)
+                return BadRequest(new { message = $"Username '{model.UserName}' is already taken." });
+
+            if (await _userManager.FindByEmailAsync(model.Email) != null)
+                return BadRequest(new { message = $"Email '{model.Email}' is already registered." });
+
+            // Handle profile photo upload if present
+            string? savedRelativePath = null;
+            if (model.ProfilePhoto != null && model.ProfilePhoto.Length > 0)
+            {
+                // validate content type
+                var allowedContentTypes = new[] { "image/jpeg", "image/png", "image/webp" };
+                var contentType = model.ProfilePhoto.ContentType?.ToLowerInvariant() ?? string.Empty;
+                if (!allowedContentTypes.Contains(contentType))
+                {
+                    return BadRequest(new { message = "Only JPG, PNG or WEBP images are allowed for profile photo." });
+                }
+
+                const long maxBytes = 2 * 1024 * 1024; // 2 MB
+                if (model.ProfilePhoto.Length > maxBytes)
+                {
+                    return BadRequest(new { message = "Profile photo max size is 2 MB." });
+                }
+
+                // Ensure directory exists
+                var uploadsRoot = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads", "profiles");
+                if (!Directory.Exists(uploadsRoot))
+                    Directory.CreateDirectory(uploadsRoot);
+
+                var ext = Path.GetExtension(model.ProfilePhoto.FileName);
+                if (string.IsNullOrWhiteSpace(ext))
+                {
+                    // fallback to extension by content type
+                    ext = contentType switch
+                    {
+                        "image/png" => ".png",
+                        "image/webp" => ".webp",
+                        _ => ".jpg"
+                    };
+                }
+
+                var fileName = $"{Guid.NewGuid():N}{ext}";
+                var filePath = Path.Combine(uploadsRoot, fileName);
+
+                try
+                {
+                    using (var stream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await model.ProfilePhoto.CopyToAsync(stream);
+                    }
+
+                    // saved relative path for storage and retrieval by client
+                    savedRelativePath = $"/uploads/profiles/{fileName}";
+                }
+                catch (Exception ex)
+                {
+                    // log ex in real app (ILogger)
+                    return StatusCode(500, new { message = "Failed to save profile photo", error = ex.Message });
+                }
+            }
+
             var user = new ApplicationUser
             {
                 UserName = model.UserName,
                 Email = model.Email,
                 FullName = model.FullName,
-                EmailConfirmed = true
+                EmailConfirmed = true,
+                ProfilePhotoPath = savedRelativePath
             };
 
             var result = await _userManager.CreateAsync(user, model.Password);
-            if (!result.Succeeded) return BadRequest(result.Errors);
+            if (!result.Succeeded)
+            {
+                var errors = result.Errors.Select(e => e.Description).ToArray();
+                return BadRequest(new { errors });
+            }
 
-            var role = string.IsNullOrWhiteSpace(model.Role) ? "Intern" : model.Role;
-            await _userManager.AddToRoleAsync(user, role);
+            // Assign Intern role server-side (ignore client role)
+            var internRoleName = "Intern";
+            if (!await _roleManager.RoleExistsAsync(internRoleName))
+            {
+                var createRoleResult = await _roleManager.CreateAsync(new IdentityRole<int>(internRoleName));
+                if (!createRoleResult.Succeeded)
+                {
+                    // optionally rollback the newly created user in critical systems
+                    return StatusCode(500, new { message = "Failed to create default role" });
+                }
+            }
 
-            // Remove OTP after success
+            var addRoleResult = await _userManager.AddToRoleAsync(user, internRoleName);
+            if (!addRoleResult.Succeeded)
+            {
+                // optionally rollback the newly created user in critical systems
+                return StatusCode(500, new { message = "User created but failed to assign default role" });
+            }
+
+            // Remove OTP after successful registration
             _otpStore.Remove(model.Email);
 
-            return Ok(new { message = "User registered successfully" });
+            // Return created user info (avoid sensitive data)
+            return Ok(new
+            {
+                message = "User registered successfully",
+                userId = user.Id,
+                profilePhoto = user.ProfilePhotoPath
+            });
         }
 
         // ================= Login =================
@@ -133,7 +229,9 @@ namespace InternshipManagement.Api.Controllers
                 token = tokenString,
                 expires = tokenDescriptor.Expires,
                 username = user.UserName,
-                roles = userRoles
+                roles = userRoles,
+                userId = user.Id,
+                profilePhoto = user.ProfilePhotoPath
             });
         }
 

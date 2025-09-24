@@ -1,0 +1,86 @@
+// notifications.component.scss
+
+.container {
+  max-width: 800px;
+
+  h3 {
+    font-weight: 700;
+    color: #0d6efd; // Bootstrap primary
+  }
+}
+
+// Notification cards
+.card {
+  transition: all 0.2s ease-in-out;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+  }
+
+  .card-body {
+    padding: 1rem 1.2rem;
+
+    h6 {
+      color: #333;
+    }
+
+    p {
+      margin-bottom: 0.5rem;
+    }
+  }
+}
+
+// Status badges
+.badge {
+  border-radius: 12px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+}
+
+.badge.bg-info {
+  background-color: #cff4fc !important;
+  color: #055160 !important;
+  border: 1px solid #b6effb;
+}
+
+.badge.bg-secondary {
+  background-color: #e2e3e5 !important;
+  color: #41464b !important;
+  border: 1px solid #d3d6d8;
+}
+
+// Join button
+.btn-primary {
+  font-size: 0.8rem;
+  padding: 0.35rem 0.9rem;
+  border-radius: 8px;
+
+  &:hover {
+    background-color: darken(#0d6efd, 5%);
+  }
+}
+
+// Empty state
+.no-notifications {
+  text-align: center;
+  margin-top: 2rem;
+
+  img {
+    max-width: 140px;
+    opacity: 0.9;
+    margin-bottom: 1rem;
+  }
+
+  p {
+    font-size: 0.95rem;
+    color: #6c757d;
+  }
+}
+
+// Loading spinner
+.spinner-border {
+  width: 2rem;
+  height: 2rem;
+}

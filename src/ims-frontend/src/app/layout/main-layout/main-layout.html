@@ -1,9 +1,7 @@
 <nav class="navbar navbar-expand-lg navbar-dark custom-navbar shadow-sm">
   <div class="container-fluid">
     <!-- Brand -->
-    <a class="navbar-brand fw-bold text-light" routerLink="/welcome">
-      🌐 Interns Management Service
-    </a>
+    <a class="navbar-brand fw-bold text-light" routerLink="/welcome"> 🌐 IMS </a>
 
     <!-- Mobile toggle -->
     <button
@@ -21,44 +19,48 @@
     <!-- Menu -->
     <div class="collapse navbar-collapse" id="navbarNav">
       <ul class="navbar-nav me-auto mb-2 mb-lg-0 fw-semibold">
-        <!-- Dashboard for everyone -->
+        <!-- Dashboard -->
         <li class="nav-item">
           <a class="nav-link" routerLink="/dashboard">🏠 Dashboard</a>
         </li>
 
         <!-- Admin-only menu -->
         <ng-container *ngIf="isAdmin()">
-          <li class="nav-item">
-            <a class="nav-link" routerLink="/admin/enrollments">👥 Enrollments</a>
-          </li>
+          <li class="nav-item"><a class="nav-link" routerLink="/admin/enrollments">👥 Enrollments</a></li>
           <li class="nav-item"><a class="nav-link" routerLink="/batches">📦 Manage Batches</a></li>
-          <li class="nav-item">
-            <a class="nav-link" routerLink="/assignments">📝 Assign Interns</a>
-          </li>
+          <li class="nav-item"><a class="nav-link" routerLink="/assignments">📝 Assign Interns</a></li>
           <li class="nav-item"><a class="nav-link" routerLink="/qna-admin">💬 QnA Admin</a></li>
-          <li class="nav-item">
-            <a class="nav-link" routerLink="/attendance-admin">📊 Attendance</a>
-          </li>
+          <li class="nav-item"><a class="nav-link" routerLink="/attendance-admin">📊 Attendance</a></li>
           <li class="nav-item"><a class="nav-link" routerLink="/meetings-admin">📅 Meetings</a></li>
-          <li class="nav-item">
-            <a class="nav-link" routerLink="/manage-documents">📂 Documents</a>
-          </li>
+          <li class="nav-item"><a class="nav-link" routerLink="/manage-documents">📂 Documents</a></li>
+          <li class="nav-item"><a class="nav-link" routerLink="/leave-manage">🛑 Manage Leaves</a></li>
+          <li class="nav-item"><a class="nav-link" routerLink="/feedback-admin">📊 Feedback</a></li>
         </ng-container>
 
         <!-- Intern-only menu -->
         <ng-container *ngIf="isIntern()">
           <li class="nav-item"><a class="nav-link" routerLink="/courses">🎓 Courses</a></li>
           <li class="nav-item"><a class="nav-link" routerLink="/qna">💬 QnA</a></li>
-          <li class="nav-item">
-            <a class="nav-link" routerLink="/attendance">📊 My Attendance</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" routerLink="/upload-documents">📂 Upload Docs</a>
-          </li>
+          <li class="nav-item"><a class="nav-link" routerLink="/attendance">📊 My Attendance</a></li>
+          <li class="nav-item"><a class="nav-link" routerLink="/upload-documents">📂 Upload Docs</a></li>
           <li class="nav-item"><a class="nav-link" routerLink="/meetings">📅 Meetings</a></li>
-          <li class="nav-item">
-            <a class="nav-link" routerLink="/notifications">🔔 Notifications</a>
+
+          <!-- Notifications with badge -->
+          <li class="nav-item position-relative">
+            <a class="nav-link" routerLink="/notifications">
+              🔔 Notifications
+              <span 
+                *ngIf="notifCount > 0" 
+                class="badge bg-danger position-absolute top-0 start-100 translate-middle"
+                style="font-size: 0.75rem; padding: 0.25em 0.4em;"
+              >
+                {{ notifCount }}
+              </span>
+            </a>
           </li>
+
+          <li class="nav-item"><a class="nav-link" routerLink="/leave-apply">📝 Apply Leave</a></li>
+          <li class="nav-item"><a class="nav-link" routerLink="/feedback">📝 Feedback</a></li>
         </ng-container>
       </ul>
 
@@ -74,18 +76,41 @@
         <button class="btn btn-search ms-2" type="submit">Go</button>
       </form>
 
-      <!-- Logout -->
+      <!-- User dropdown -->
       <div class="dropdown">
         <button
-          class="btn btn-outline-light dropdown-toggle"
+          class="btn btn-outline-light dropdown-toggle d-flex align-items-center px-2"
           type="button"
           id="userMenu"
           data-bs-toggle="dropdown"
           aria-expanded="false"
         >
-          👤 {{ username || 'User' }}
+          <!-- Profile Photo -->
+          <img
+            *ngIf="profilePhoto; else defaultAvatar"
+            [src]="profilePhoto"
+            alt="Profile"
+            class="rounded-circle me-2 border"
+            style="width: 34px; height: 34px; object-fit: cover;"
+          />
+          <ng-template #defaultAvatar>
+            <div
+              class="rounded-circle bg-light text-dark d-flex align-items-center justify-content-center me-2"
+              style="width: 34px; height: 34px; font-size: 18px;"
+            >
+              👤
+            </div>
+          </ng-template>
+
+          <!-- Username -->
+          <span>{{ username || 'User' }}</span>
         </button>
-        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userMenu">
+
+        <ul class="dropdown-menu dropdown-menu-end shadow-sm" aria-labelledby="userMenu">
+          <li>
+            <a class="dropdown-item" routerLink="/profile-edit">✏️ Edit Profile</a>
+          </li>
+          <li><hr class="dropdown-divider" /></li>
           <li>
             <button class="dropdown-item text-danger" (click)="logout()">Logout</button>
           </li>
@@ -95,7 +120,7 @@
   </div>
 </nav>
 
-<!-- Render child routes -->
+<!-- Child routes -->
 <div class="container mt-4">
   <router-outlet></router-outlet>
 </div>

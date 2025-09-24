@@ -12,7 +12,7 @@ export const authGuard: CanActivateFn = (route: ActivatedRouteSnapshot, state: R
     return false;
   }
 
-  // ✅ Role-based check
+  
   const requiredRoles = route.data?.['roles'] as string[] | undefined;
   if (requiredRoles && !roles.some((r: string) => requiredRoles.includes(r))) {
     alert('Access denied: You do not have permission to view this page.');

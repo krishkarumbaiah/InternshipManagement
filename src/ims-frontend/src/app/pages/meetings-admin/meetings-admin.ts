@@ -15,12 +15,14 @@ import Swal from 'sweetalert2';
 })
 export class MeetingsAdminComponent implements OnInit {
   meetings: any[] = [];
-  newMeeting = { title: '', description: '', scheduledAt: '', meetingLink: '' };
+  batches: any[] = []; // store available batches
+  newMeeting = { title: '', description: '', scheduledAt: '', meetingLink: '', batchId: '' };
 
   constructor(private http: HttpClient, private toastr: ToastrService) {}
 
   ngOnInit(): void {
     this.loadMeetings();
+    this.loadBatches();
   }
 
   loadMeetings() {
@@ -30,39 +32,50 @@ export class MeetingsAdminComponent implements OnInit {
     });
   }
 
-  createMeeting() {
-    this.http.post(`${environment.apiUrl}/meetings`, this.newMeeting).subscribe({
-      next: () => {
-        this.toastr.success('Meeting created');
-        this.newMeeting = { title: '', description: '', scheduledAt: '', meetingLink: '' };
-        this.loadMeetings();
-      },
-      error: () => this.toastr.error('Failed to create meeting')
+  loadBatches() {
+    this.http.get<any[]>(`${environment.apiUrl}/batches`).subscribe({
+      next: (res) => (this.batches = res),
+      error: () => this.toastr.error('Failed to load batches')
     });
   }
 
- // Delete meeting with SweetAlert2
-deleteMeeting(id: number) {
-  Swal.fire({
-    title: 'Are you sure?',
-    text: 'This meeting will be permanently deleted!',
-    icon: 'warning',
-    showCancelButton: true,
-    confirmButtonColor: '#dc3545',
-    cancelButtonColor: '#6c757d',
-    confirmButtonText: 'Yes, delete it!',
-    cancelButtonText: 'Cancel'
-  }).then((result) => {
-    if (result.isConfirmed) {
-      this.http.delete(`${environment.apiUrl}/meetings/${id}`).subscribe({
-        next: () => {
-          this.toastr.success('Meeting deleted successfully 🗑️');
-          this.loadMeetings();
-        },
-        error: () => this.toastr.error('Failed to delete meeting ❌'),
-      });
+  createMeeting() {
+    if (!this.newMeeting.batchId) {
+      this.toastr.warning('Please select a batch');
+      return;
     }
-  });
-}
 
+    this.http.post(`${environment.apiUrl}/meetings`, this.newMeeting).subscribe({
+      next: () => {
+        this.toastr.success('Meeting created ✅');
+        this.newMeeting = { title: '', description: '', scheduledAt: '', meetingLink: '', batchId: '' };
+        this.loadMeetings();
+      },
+      error: () => this.toastr.error('Failed to create meeting ❌')
+    });
+  }
+
+  // Delete meeting with SweetAlert2
+  deleteMeeting(id: number) {
+    Swal.fire({
+      title: 'Are you sure?',
+      text: 'This meeting will be permanently deleted!',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#dc3545',
+      cancelButtonColor: '#6c757d',
+      confirmButtonText: 'Yes, delete it!',
+      cancelButtonText: 'Cancel'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.http.delete(`${environment.apiUrl}/meetings/${id}`).subscribe({
+          next: () => {
+            this.toastr.success('Meeting deleted successfully 🗑️');
+            this.loadMeetings();
+          },
+          error: () => this.toastr.error('Failed to delete meeting ❌'),
+        });
+      }
+    });
+  }
 }

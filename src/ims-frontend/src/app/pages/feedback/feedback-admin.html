@@ -1,0 +1,32 @@
+<div class="feedback-admin card shadow-lg p-4">
+  <h4 class="mb-3">📊 Feedback of Interns</h4>
+
+  <div *ngIf="loading" class="text-center py-4">Loading...</div>
+
+  <div class="table-responsive" *ngIf="!loading">
+    <table class="table table-hover align-middle">
+      <thead class="custom-head">
+        <tr>
+          <th>User</th>
+          <th>Comments</th>
+          <th>Rating</th>
+          <th>Submitted</th>
+          <th class="text-center">Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let fb of feedbacks">
+          <td class="fw-semibold">{{ fb.userName }}</td>
+          <td>{{ fb.comments }}</td>
+          <td>⭐ {{ fb.rating }}/5</td>
+          <td>{{ fb.submittedAt | date: 'short' }}</td>
+          <td class="text-center">
+            <button class="btn btn-sm btn-outline-dark" (click)="deleteFeedback(fb.id)">
+              🗑
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

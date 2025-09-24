@@ -1,0 +1,82 @@
+<!-- Apply Leave Card -->
+<div class="leave-apply card shadow-lg p-4 mb-4">
+  <h4 class="mb-3">📝 Apply for Leave</h4>
+
+  <form [formGroup]="leaveForm" (ngSubmit)="applyLeave()">
+    <div class="row g-3">
+      <div class="col-md-4">
+        <label class="form-label">Start Date</label>
+        <input type="date" class="form-control" formControlName="startDate" />
+      </div>
+      <div class="col-md-4">
+        <label class="form-label">End Date</label>
+        <input type="date" class="form-control" formControlName="endDate" />
+      </div>
+      <div class="col-md-4">
+        <label class="form-label">Reason</label>
+        <input
+          type="text"
+          class="form-control"
+          placeholder="Enter reason"
+          formControlName="reason"
+        />
+      </div>
+    </div>
+
+    <button
+      class="btn btn-gradient mt-4 px-4 py-2 fw-semibold"
+      type="submit"
+      [disabled]="leaveForm.invalid"
+    >
+      ➕ Apply Leave
+    </button>
+  </form>
+</div>
+
+<!-- Leave History Card -->
+<div class="leave-history card shadow-lg p-4">
+  <h4 class="mb-3">📜 My Leave History</h4>
+
+  <div class="table-responsive">
+    <table class="table table-hover align-middle">
+      <thead class="table-primary">
+        <tr>
+          <th>Start Date</th>
+          <th>End Date</th>
+          <th>Reason</th>
+          <th>Status</th>
+          <th class="text-center">Actions</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr *ngFor="let leave of leaves">
+          <td>{{ leave.startDate | date : 'mediumDate' }}</td>
+          <td>{{ leave.endDate | date : 'mediumDate' }}</td>
+          <td>{{ leave.reason }}</td>
+          <td>
+            <span
+              class="badge px-3 py-2"
+              [ngClass]="{
+                'bg-gradient-warning': leave.status === 'Pending',
+                'bg-gradient-success': leave.status === 'Approved',
+                'bg-gradient-danger': leave.status === 'Rejected'
+              }"
+            >
+              {{ leave.status }}
+            </span>
+          </td>
+          <td class="text-center">
+            <button
+              *ngIf="leave.status === 'Pending'"
+              class="btn btn-cancel fw-semibold"
+              (click)="cancelLeave(leave.id)"
+            >
+              ❌ Cancel
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

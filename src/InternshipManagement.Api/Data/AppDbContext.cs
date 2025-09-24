@@ -3,8 +3,6 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
-
-
 namespace InternshipManagement.Api.Data
 {
     public class AppDbContext : IdentityDbContext<ApplicationUser, IdentityRole<int>, int>
@@ -26,14 +24,14 @@ namespace InternshipManagement.Api.Data
         public DbSet<UserCourse> UserCourses { get; set; } = null!;
         public DbSet<OtpStore> Otps { get; set; } = null!;
         public DbSet<Document> Documents { get; set; } = null!;
-
-
+        public DbSet<Leave> Leaves { get; set; } = null!;
+        public DbSet<Feedback> Feedbacks { get; set; } = null!;
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
 
-            // Existing configs
+            // UserBatch mapping
             builder.Entity<UserBatch>()
                 .HasOne(ub => ub.User)
                 .WithMany()
@@ -49,7 +47,7 @@ namespace InternshipManagement.Api.Data
             builder.Entity<TypeCdmt>().ToTable("TypeCdmt");
             builder.Entity<RowStatus>().ToTable("RowStatus");
 
-
+            // UserCourse mapping
             builder.Entity<UserCourse>()
                 .HasIndex(uc => new { uc.UserId, uc.CourseId })
                 .IsUnique();
@@ -65,6 +63,28 @@ namespace InternshipManagement.Api.Data
                 .WithMany(c => c.UserCourses)
                 .HasForeignKey(uc => uc.CourseId)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            // Leave mapping
+            builder.Entity<Leave>()
+                .HasOne(l => l.User)
+                .WithMany()
+                .HasForeignKey(l => l.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // ✅ Notification → Meeting (cascade)
+            builder.Entity<Notification>()
+                .HasOne(n => n.Meeting)
+                .WithMany()
+                .HasForeignKey(n => n.MeetingId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // ✅ Notification → Batch (restrict to avoid multiple cascade paths)
+            builder.Entity<Notification>()
+                .HasOne(n => n.Batch)
+                .WithMany()
+                .HasForeignKey(n => n.BatchId)
+                .OnDelete(DeleteBehavior.Restrict);
+
         }
     }
 }

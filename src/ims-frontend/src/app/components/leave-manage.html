@@ -1,0 +1,64 @@
+<div class="leave-container card shadow-lg p-4">
+  <h3 class="mb-4 text-primary fw-bold">
+    📋 Leave Requests
+  </h3>
+
+  <div class="table-responsive">
+    <table class="table table-hover align-middle">
+      <thead>
+        <tr>
+          <th>User</th>
+          <th>Start</th>
+          <th>End</th>
+          <th>Reason</th>
+          <th>Status</th>
+          <th class="text-center">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let leave of leaves">
+          <td class="fw-semibold">{{ leave.userName }}</td>
+          <td>{{ leave.startDate | date: 'mediumDate' }}</td>
+          <td>{{ leave.endDate | date: 'mediumDate' }}</td>
+          <td>{{ leave.reason }}</td>
+          <td>
+            <span
+              class="badge px-3 py-2"
+              [ngClass]="{
+                'bg-warning text-dark': leave.status === 'Pending',
+                'bg-success': leave.status === 'Approved',
+                'bg-danger': leave.status === 'Rejected'
+              }"
+            >
+              {{ leave.status }}
+            </span>
+          </td>
+          <td class="text-center">
+            <div class="btn-group btn-group-sm" role="group">
+              <button
+                class="btn btn-outline-success"
+                (click)="updateStatus(leave.id, 'Approved')"
+                [disabled]="leave.status === 'Approved'"
+              >
+                ✅ Approve
+              </button>
+              <button
+                class="btn btn-outline-danger"
+                (click)="updateStatus(leave.id, 'Rejected')"
+                [disabled]="leave.status === 'Rejected'"
+              >
+                ❌ Reject
+              </button>
+              <button
+                class="btn btn-outline-dark"
+                (click)="deleteLeave(leave.id)"
+              >
+                🗑 Delete
+              </button>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

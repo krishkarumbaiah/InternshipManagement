@@ -15,16 +15,23 @@ export class MeetingsComponent implements OnInit {
   meetings: any[] = [];
   apiUrl = environment.apiUrl;
 
-  constructor(private http: HttpClient, private toastr: ToastrService) {}
+  constructor(
+    private http: HttpClient,
+    private toastr: ToastrService
+  ) {}
 
   ngOnInit(): void {
     this.loadMeetings();
   }
 
+  // ✅ directly call /upcoming/mine
   loadMeetings() {
-    this.http.get<any[]>(`${this.apiUrl}/meetings/upcoming`).subscribe({
+    this.http.get<any[]>(`${this.apiUrl}/meetings/upcoming/mine`).subscribe({
       next: (res) => (this.meetings = res),
-      error: () => this.toastr.error('Failed to load meetings')
+      error: (err) => {
+        console.error('Failed to load meetings', err);
+        this.toastr.error(err.error?.message || 'Failed to load meetings');
+      }
     });
   }
 

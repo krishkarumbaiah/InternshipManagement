@@ -20,5 +20,8 @@ namespace InternshipManagement.Api.Models
         public string MeetingLink { get; set; } = string.Empty;
 
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+        [Required]
+        public int BatchId { get; set; }
+        public Batch? Batch { get; set; } = null;
     }
 }

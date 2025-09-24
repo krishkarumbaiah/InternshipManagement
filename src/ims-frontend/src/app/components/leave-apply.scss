@@ -1,0 +1,88 @@
+// Gradient Button
+.btn-gradient {
+  background: linear-gradient(45deg, #ff416c, #ff4b2b);
+  color: white;
+  border: none;
+  transition: all 0.3s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+    opacity: 0.9;
+    box-shadow: 0 4px 12px rgba(255, 65, 108, 0.4);
+  }
+}
+
+// Cancel Button
+.btn-cancel {
+  background: linear-gradient(45deg, #ff6a00, #ee0979);
+  color: white;
+  border: none;
+  padding: 5px 12px;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+
+  &:hover {
+    opacity: 0.85;
+    transform: scale(1.05);
+  }
+}
+
+// Table Custom Header
+.custom-header {
+  background: linear-gradient(90deg, #4facfe, #00f2fe);
+  color: #7bced7 !important;
+
+  th {
+    text-transform: uppercase;
+    font-size: 0.9rem;
+    letter-spacing: 0.6px;
+  }
+}
+
+// Badge Gradients
+.bg-gradient-warning {
+  background: linear-gradient(45deg, #ffcc70, #ff8177);
+  color: #222;
+}
+.bg-gradient-success {
+  background: linear-gradient(45deg, #38ef7d, #11998e);
+  color: #fff;
+}
+.bg-gradient-danger {
+  background: linear-gradient(45deg, #ff0844, #ff512f);
+  color: #fff;
+}
+
+// Card styling
+.leave-apply,
+.leave-history {
+  border-radius: 15px;
+  background: #fff;
+  animation: fadeIn 0.4s ease-in-out;
+
+  h4 {
+    font-size: 1.4rem;
+    font-weight: 600;
+    border-bottom: 2px solid #eee;
+    padding-bottom: 6px;
+  }
+
+  table tbody tr {
+    transition: background 0.2s ease;
+
+    &:hover {
+      background: #f1f9ff;
+    }
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(15px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

@@ -1,0 +1,25 @@
+<div class="feedback-form card shadow-lg p-4 mb-4">
+  <h4 class="mb-3">📝 Internship Feedback</h4>
+
+  <form [formGroup]="feedbackForm" (ngSubmit)="submitFeedback()">
+    <div class="mb-3">
+      <label class="form-label fw-semibold">Comments</label>
+      <textarea class="form-control" rows="5" formControlName="comments" placeholder="Tell us about your experience..."></textarea>
+
+      <!-- use getter 'comments' -->
+      <div *ngIf="comments?.invalid && comments?.touched" class="text-danger small mt-1">
+        Comments are required (max 1000 characters).
+      </div>
+    </div>
+
+    <div class="mb-3 d-flex align-items-center">
+      <label class="form-label mb-0 me-3 fw-semibold">Rating</label>
+      <input type="number" class="form-control w-25" min="1" max="5" formControlName="rating" />
+      <div class="ms-3 small text-muted">1 = poor · 5 = excellent</div>
+    </div>
+
+    <button class="btn btn-gradient px-4 py-2 fw-semibold" type="submit" [disabled]="feedbackForm.invalid || submitting">
+      {{ submitting ? 'Submitting...' : 'Submit Feedback' }}
+    </button>
+  </form>
+</div>

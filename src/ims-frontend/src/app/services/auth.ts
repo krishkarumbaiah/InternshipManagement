@@ -1,48 +1,70 @@
-import { Injectable } from '@angular/core';
+import { Injectable } from '@angular/core'; 
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../environments/environment';
-import { Observable } from 'rxjs';
+import { Observable, BehaviorSubject } from 'rxjs';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AuthService {
   private apiUrl = environment.apiUrl;
 
+  // 🔥 Shared observable for profile photo
+  private profilePhotoSubject = new BehaviorSubject<string | null>(this.loadInitialPhoto());
+  profilePhoto$ = this.profilePhotoSubject.asObservable();
+
   constructor(private http: HttpClient) {}
+
+  private loadInitialPhoto(): string | null {
+    const userId = localStorage.getItem('userId');
+    return userId ? localStorage.getItem(`profilePhoto_${userId}`) : null;
+  }
 
   login(data: any): Observable<any> {
     return this.http.post(`${this.apiUrl}/auth/login`, data);
   }
 
   register(data: any): Observable<any> {
+    if (data instanceof FormData) {
+      return this.http.post(`${this.apiUrl}/auth/register`, data);
+    }
     return this.http.post(`${this.apiUrl}/auth/register`, data);
   }
 
-  //  Send OTP
   sendOtp(email: string): Observable<any> {
     return this.http.post(`${this.apiUrl}/auth/send-otp`, JSON.stringify(email), {
-      headers: { 'Content-Type': 'application/json' }
+      headers: { 'Content-Type': 'application/json' },
     });
   }
 
-  // Forgot Password
   forgotPassword(email: string): Observable<any> {
     return this.http.post(`${this.apiUrl}/auth/forgot-password`, { email });
   }
 
-  // Reset Password
   resetPassword(email: string, token: string, newPassword: string): Observable<any> {
     return this.http.post(`${this.apiUrl}/auth/reset-password`, {
       email,
       token,
-      newPassword
+      newPassword,
     });
   }
 
-  saveAuthData(token: string, roles: string[]) {
-    localStorage.setItem('token', token);
-    localStorage.setItem('roles', JSON.stringify(roles));
+  saveAuthData(
+    token: string,
+    roles: string[] = [],
+    userId?: string | number | null,
+    profilePhoto?: string
+  ) {
+    if (token) localStorage.setItem('token', token);
+    if (roles) localStorage.setItem('roles', JSON.stringify(roles));
+    if (userId !== undefined && userId !== null) {
+      localStorage.setItem('userId', String(userId));
+      if (profilePhoto) {
+        const key = `profilePhoto_${userId}`;
+        localStorage.setItem(key, profilePhoto);
+        this.profilePhotoSubject.next(profilePhoto); // 🔥 notify subscribers
+      }
+    }
   }
 
   getToken(): string | null {
@@ -54,6 +76,26 @@ export class AuthService {
     return roles ? JSON.parse(roles) : [];
   }
 
+  getUserId(): number | null {
+    const id = localStorage.getItem('userId');
+    return id ? Number(id) : null;
+  }
+
+  getProfilePhoto(): string | null {
+    const userId = this.getUserId();
+    if (!userId) return null;
+    return localStorage.getItem(`profilePhoto_${userId}`);
+  }
+
+  setProfilePhoto(photoUrl: string) {
+    const userId = this.getUserId();
+    if (userId) {
+      const key = `profilePhoto_${userId}`;
+      localStorage.setItem(key, photoUrl);
+      this.profilePhotoSubject.next(photoUrl); // 🔥 live update
+    }
+  }
+
   isLoggedIn(): boolean {
     return !!this.getToken();
   }
@@ -62,8 +104,22 @@ export class AuthService {
     return this.getRoles().includes('Admin');
   }
 
+  getProfile(): Observable<any> {
+    return this.http.get(`${this.apiUrl}/profile`);
+  }
+
+  updateProfile(data: FormData): Observable<any> {
+    return this.http.put(`${this.apiUrl}/profile`, data);
+  }
+
   logout() {
+    const userId = this.getUserId();
+    if (userId) {
+      localStorage.removeItem(`profilePhoto_${userId}`);
+    }
     localStorage.removeItem('token');
     localStorage.removeItem('roles');
+    localStorage.removeItem('userId');
+    this.profilePhotoSubject.next(null); // 🔥 clear for subscribers
   }
 }

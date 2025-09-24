@@ -14,19 +14,28 @@ namespace InternshipManagement.Api.Models.DTOs
 
         [Required]
         public string MeetingLink { get; set; } = string.Empty;
+
         [Required]
-        public int BatchId { get; set; }
+        public int BatchId { get; set; }   // link meeting to a batch
     }
 
     public class MeetingDto
     {
         public int Id { get; set; }
+
         public string Title { get; set; } = string.Empty;
+
         public string Description { get; set; } = string.Empty;
+
         public DateTime ScheduledAt { get; set; }
+
         public string MeetingLink { get; set; } = string.Empty;
 
-        
         public DateTime CreatedAt { get; set; }
+
+        // New fields for batch association
+        public int BatchId { get; set; }
+
+        public string BatchName { get; set; } = string.Empty;
     }
 }

@@ -4,7 +4,7 @@
   <!-- Create Meeting -->
   <form (ngSubmit)="createMeeting()" class="meeting-form mb-4">
     <div class="row g-3 align-items-end">
-      <div class="col-md-3">
+      <div class="col-md-2">
         <input
           [(ngModel)]="newMeeting.title"
           name="title"
@@ -13,7 +13,8 @@
           required
         />
       </div>
-      <div class="col-md-3">
+
+      <div class="col-md-2">
         <input
           [(ngModel)]="newMeeting.description"
           name="description"
@@ -21,7 +22,8 @@
           placeholder="Description"
         />
       </div>
-      <div class="col-md-3">
+
+      <div class="col-md-2">
         <input
           [(ngModel)]="newMeeting.scheduledAt"
           name="scheduledAt"
@@ -30,6 +32,7 @@
           required
         />
       </div>
+
       <div class="col-md-2">
         <input
           [(ngModel)]="newMeeting.meetingLink"
@@ -39,19 +42,34 @@
           required
         />
       </div>
-      <div class="col-md-1 d-flex">
+
+      <!-- Batch dropdown -->
+      <div class="col-md-2">
+        <select
+          [(ngModel)]="newMeeting.batchId"
+          name="batchId"
+          class="form-select custom-input"
+          required
+        >
+          <option value="" disabled selected>Select Batch</option>
+          <option *ngFor="let b of batches" [value]="b.id">{{ b.name }}</option>
+        </select>
+      </div>
+
+      <div class="col-md-2 d-flex">
         <button type="submit" class="btn btn-add w-100">➕ Add</button>
       </div>
     </div>
   </form>
 
   <!-- Meetings List -->
-  <table class=" custom-meetings-table shadow-sm mt-3" *ngIf="meetings.length > 0">
+  <table class="custom-meetings-table shadow-sm mt-3" *ngIf="meetings.length > 0">
     <thead>
       <tr>
         <th>#</th>
         <th>Title</th>
         <th>Description</th>
+        <th>Batch</th>
         <th>Created At</th>
         <th>Scheduled At</th>
         <th>Link</th>
@@ -63,6 +81,7 @@
         <td>{{ i + 1 }}</td>
         <td class="fw-bold">{{ m.title }}</td>
         <td>{{ m.description }}</td>
+        <td>{{ m.batchName || '—' }}</td>
         <td>{{ m.createdAt | date: 'short' }}</td>
         <td>{{ m.scheduledAt | date: 'short' }}</td>
         <td>

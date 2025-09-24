@@ -19,7 +19,12 @@ import { CoursesComponent } from './pages/courses/courses/courses';
 import { AdminEnrollmentsComponent } from './pages/admin/enrollments/enrollments';
 import { UploadDocumentsComponent } from './intern/upload-documents/upload-documents';
 import { ManageDocumentsComponent } from './intern/manage-documents/manage-documents';
-import { Welcome } from './pages/welcome/welcome';  
+import { Welcome } from './pages/welcome/welcome';
+import { LeaveApplyComponent } from './components/leave-apply';
+import { LeaveManageComponent } from './components/leave-manage';
+import { FeedbackFormComponent } from './pages/feedback/feedback-form';
+import { FeedbackAdminComponent } from './pages/feedback/feedback-admin';
+import { ProfileEditComponent } from './pages/Profile/profile-edit';
 
 export const routes: Routes = [
   // Public routes
@@ -34,7 +39,6 @@ export const routes: Routes = [
     component: MainLayoutComponent,
     canActivate: [authGuard],
     children: [
-      
       { path: '', redirectTo: 'welcome', pathMatch: 'full' },
 
       // Welcome page
@@ -50,6 +54,8 @@ export const routes: Routes = [
       { path: 'notifications', component: NotificationsComponent, data: { roles: ['Intern'] } },
       { path: 'courses', component: CoursesComponent, data: { roles: ['Intern'] } },
       { path: 'upload-documents', component: UploadDocumentsComponent, data: { roles: ['Intern'] } },
+      { path: 'leave-apply', component: LeaveApplyComponent, data: { roles: ['Intern'] } },
+      { path: 'feedback', component: FeedbackFormComponent, data: { roles: ['Intern'] } },
 
       // Admin routes
       { path: 'qna-admin', component: QnaAdminComponent, data: { roles: ['Admin'] } },
@@ -58,7 +64,12 @@ export const routes: Routes = [
       { path: 'assignments', component: AssignmentsComponent, data: { roles: ['Admin'] } },
       { path: 'meetings-admin', component: MeetingsAdminComponent, data: { roles: ['Admin'] } },
       { path: 'admin/enrollments', component: AdminEnrollmentsComponent, data: { roles: ['Admin'] } },
-      { path: 'manage-documents', component: ManageDocumentsComponent, data: { roles: ['Admin'] } }
+      { path: 'manage-documents', component: ManageDocumentsComponent, data: { roles: ['Admin'] } },
+      { path: 'leave-manage', component: LeaveManageComponent, data: { roles: ['Admin'] } },
+      { path: 'feedback-admin', component: FeedbackAdminComponent, data: { roles: ['Admin'] } },
+
+      // Shared route for both Admin & Intern
+      { path: 'profile-edit', component: ProfileEditComponent, data: { roles: ['Intern', 'Admin'] } }
     ]
   },
 

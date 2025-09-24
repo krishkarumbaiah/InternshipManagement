@@ -11,7 +11,7 @@ namespace InternshipManagement.Api.Models
         [Required]
         public int UserId { get; set; }  
         [ForeignKey(nameof(UserId))]
-        public ApplicationUser? User { get; set; } // ✅ Navigation property
+        public ApplicationUser? User { get; set; } 
 
         [Required]
         public string Text { get; set; } = string.Empty;

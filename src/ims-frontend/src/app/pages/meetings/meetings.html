@@ -1,35 +1,46 @@
 <div class="container mt-4 meetings-wrapper">
-  <h3 class="page-title">📅 Upcoming Meetings</h3>
+  <div class="card shadow-lg p-4">
+    <h3 class="page-title mb-3 text-gradient text-center">
+      📅 Upcoming Meetings
+    </h3>
 
-  <!-- Meetings List -->
-  <ul class="custom-meetings-list" *ngIf="meetings.length > 0; else noMeetings">
-    <li class="meeting-item shadow-sm" *ngFor="let m of meetings">
-      <div class="meeting-header">
-        <h5 class="meeting-title">{{ m.title }}</h5>
-        <span class="meeting-date">{{ m.scheduledAt | date: 'fullDate' }} - {{ m.scheduledAt | date: 'shortTime' }}</span>
+    <!-- Meetings List -->
+    <ul class="list-unstyled custom-meetings-list" *ngIf="meetings.length > 0; else noMeetings">
+      <li class="meeting-item shadow-sm p-3 mb-3 rounded" *ngFor="let m of meetings">
+        <div class="d-flex justify-content-between align-items-center mb-2">
+          <h5 class="meeting-title fw-bold text-primary mb-0">{{ m.title }}</h5>
+          <span class="badge bg-info text-dark">
+            {{ m.scheduledAt | date: 'fullDate' }} • {{ m.scheduledAt | date: 'shortTime' }}
+          </span>
+        </div>
+
+        <p class="meeting-description text-muted mb-3">{{ m.description }}</p>
+
+        <div class="meeting-actions d-flex justify-content-end">
+          <a
+            *ngIf="!isExpired(m.scheduledAt)"
+            [href]="m.meetingLink"
+            target="_blank"
+            class="btn btn-sm btn-success px-3"
+          >
+            🔗 Join Meeting
+          </a>
+
+          <span
+            *ngIf="isExpired(m.scheduledAt)"
+            class="badge bg-danger ms-2 p-2"
+          >
+            ❌ Expired
+          </span>
+        </div>
+      </li>
+    </ul>
+
+    <!-- No Meetings Fallback -->
+    <ng-template #noMeetings>
+      <div class="alert alert-warning text-center m-0">
+        ❌ No upcoming meetings for your batch.
       </div>
-
-      <p class="meeting-description">{{ m.description }}</p>
-
-      <div class="meeting-actions">
-        <a
-          *ngIf="!isExpired(m.scheduledAt)"
-          [href]="m.meetingLink"
-          target="_blank"
-          class="btn btn-join"
-        >
-          🔗 Join Meeting
-        </a>
-
-        <span *ngIf="isExpired(m.scheduledAt)" class="badge expired-badge">
-          ❌ Expired
-        </span>
-      </div>
-    </li>
-  </ul>
-
-  <!-- No Meetings Fallback -->
-  <ng-template #noMeetings>
-    <p class="text-muted text-center">No upcoming meetings.</p>
-  </ng-template>
+    </ng-template>
+  </div>
 </div>

@@ -7,6 +7,7 @@ import { AuthService } from '../../services/auth';
 import { NotificationService } from '../../services/notification.service';
 import Swal from 'sweetalert2';
 import { JwtHelperService } from '@auth0/angular-jwt';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-main-layout',
@@ -18,8 +19,12 @@ import { JwtHelperService } from '@auth0/angular-jwt';
 export class MainLayoutComponent implements OnInit, OnDestroy {
   roles: string[] = [];
   username: string = '';
+  profilePhoto: string | null = null;
   notifCount: number = 0;
+
   private notifInterval: any;
+  private photoSub?: Subscription;
+  private notifSub?: Subscription;
 
   searchQuery: string = '';
 
@@ -52,7 +57,6 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.roles = JSON.parse(localStorage.getItem('roles') || '[]');
 
-    
     const token = localStorage.getItem('token');
     if (token) {
       const decoded = this.jwtHelper.decodeToken(token);
@@ -61,21 +65,30 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
       this.username = 'User';
     }
 
+    // 👇 subscribe to profile photo updates
+    this.photoSub = this.auth.profilePhoto$.subscribe((photo) => {
+      this.profilePhoto = photo ? `${photo}?t=${new Date().getTime()}` : null;
+    });
+
+    // 👇 subscribe to real-time notif count
     if (this.isIntern()) {
-      this.loadNotifications();
-      this.notifInterval = setInterval(() => this.loadNotifications(), 60000);
+      this.notifSub = this.notifService.notifCount$.subscribe(
+        (count) => (this.notifCount = count)
+      );
+
+      // load immediately + poll every 1 min
+      this.notifService.refreshCount();
+      this.notifInterval = setInterval(
+        () => this.notifService.refreshCount(),
+        60000
+      );
     }
   }
 
   ngOnDestroy(): void {
     if (this.notifInterval) clearInterval(this.notifInterval);
-  }
-
-  loadNotifications() {
-    this.notifService.getMyNotifications().subscribe({
-      next: (res) => (this.notifCount = res?.length ?? 0),
-      error: () => (this.notifCount = 0),
-    });
+    if (this.photoSub) this.photoSub.unsubscribe();
+    if (this.notifSub) this.notifSub.unsubscribe();
   }
 
   logout() {

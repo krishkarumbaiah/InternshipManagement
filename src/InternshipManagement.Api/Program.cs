@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using InternshipManagement.Api.Config; 
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -92,6 +93,10 @@ builder.Services.AddCors(options =>
 
 builder.Services.AddScoped<IAppEmailSender, EmailSender>();
 
+//  Register Email service
+builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("Email"));
+builder.Services.AddScoped<IEmailService, EmailService>();
+
 // Existing hosted service
 builder.Services.AddHostedService<NotificationService>();
 
@@ -164,7 +169,7 @@ using (var scope = app.Services.CreateScope())
         await db.SaveChangesAsync();
     }
 
-    // ✅ New: Seed courses
+    //  Seed courses
     async Task SeedCourses()
     {
         if (!db.Courses.Any())
@@ -181,7 +186,7 @@ using (var scope = app.Services.CreateScope())
 
     SeedIdentity().GetAwaiter().GetResult();
     SeedMasterTables().GetAwaiter().GetResult();
-    SeedCourses().GetAwaiter().GetResult(); // ✅ Added
+    SeedCourses().GetAwaiter().GetResult(); 
 }
 
 if (app.Environment.IsDevelopment())
@@ -195,5 +200,6 @@ app.UseCors("AllowAngular");
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
-
+app.UseStaticFiles();
 app.Run();
+

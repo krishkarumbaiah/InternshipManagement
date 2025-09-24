@@ -33,6 +33,9 @@ namespace InternshipManagement.Api.Migrations
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("int");
 
+                    b.Property<int?>("BatchId")
+                        .HasColumnType("int");
+
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
@@ -84,6 +87,8 @@ namespace InternshipManagement.Api.Migrations
                         .HasColumnType("nvarchar(256)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("BatchId");
 
                     b.HasIndex("NormalizedEmail")
                         .HasDatabaseName("EmailIndex");
@@ -203,6 +208,68 @@ namespace InternshipManagement.Api.Migrations
                     b.ToTable("Documents");
                 });
 
+            modelBuilder.Entity("InternshipManagement.Api.Models.Feedback", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Comments")
+                        .IsRequired()
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
+
+                    b.Property<int>("Rating")
+                        .HasColumnType("int");
+
+                    b.Property<DateTimeOffset>("SubmittedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Feedbacks");
+                });
+
+            modelBuilder.Entity("InternshipManagement.Api.Models.Leave", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("EndDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Reason")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<DateTime>("StartDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Leaves");
+                });
+
             modelBuilder.Entity("InternshipManagement.Api.Models.Meeting", b =>
                 {
                     b.Property<int>("Id")
@@ -210,6 +277,9 @@ namespace InternshipManagement.Api.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("BatchId")
+                        .HasColumnType("int");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
@@ -233,6 +303,8 @@ namespace InternshipManagement.Api.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("BatchId");
+
                     b.ToTable("Meetings");
                 });
 
@@ -243,6 +315,9 @@ namespace InternshipManagement.Api.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("BatchId")
+                        .HasColumnType("int");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
@@ -261,6 +336,8 @@ namespace InternshipManagement.Api.Migrations
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("BatchId");
 
                     b.HasIndex("MeetingId");
 
@@ -551,6 +628,15 @@ namespace InternshipManagement.Api.Migrations
                     b.ToTable("Otps");
                 });
 
+            modelBuilder.Entity("InternshipManagement.Api.Models.ApplicationUser", b =>
+                {
+                    b.HasOne("InternshipManagement.Api.Models.Batch", "Batch")
+                        .WithMany()
+                        .HasForeignKey("BatchId");
+
+                    b.Navigation("Batch");
+                });
+
             modelBuilder.Entity("InternshipManagement.Api.Models.Attendance", b =>
                 {
                     b.HasOne("InternshipManagement.Api.Models.Batch", "Batch")
@@ -570,13 +656,54 @@ namespace InternshipManagement.Api.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("InternshipManagement.Api.Models.Feedback", b =>
+                {
+                    b.HasOne("InternshipManagement.Api.Models.ApplicationUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("InternshipManagement.Api.Models.Leave", b =>
+                {
+                    b.HasOne("InternshipManagement.Api.Models.ApplicationUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("InternshipManagement.Api.Models.Meeting", b =>
+                {
+                    b.HasOne("InternshipManagement.Api.Models.Batch", "Batch")
+                        .WithMany()
+                        .HasForeignKey("BatchId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Batch");
+                });
+
             modelBuilder.Entity("InternshipManagement.Api.Models.Notification", b =>
                 {
+                    b.HasOne("InternshipManagement.Api.Models.Batch", "Batch")
+                        .WithMany()
+                        .HasForeignKey("BatchId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
                     b.HasOne("InternshipManagement.Api.Models.Meeting", "Meeting")
                         .WithMany()
                         .HasForeignKey("MeetingId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Batch");
 
                     b.Navigation("Meeting");
                 });
