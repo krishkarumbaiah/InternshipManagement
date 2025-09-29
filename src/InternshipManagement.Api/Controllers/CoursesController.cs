@@ -42,7 +42,8 @@ namespace InternshipManagement.Api.Controllers
             var enrollments = await _db.UserCourses
                 .Where(uc => uc.UserId == user.Id)
                 .Include(uc => uc.Course)
-                .Select(uc => new {
+                .Select(uc => new
+                {
                     uc.Course!.Id,
                     uc.Course.Title,
                     uc.Course.Description,
@@ -107,12 +108,17 @@ namespace InternshipManagement.Api.Controllers
             var list = await _db.UserCourses
                 .Include(uc => uc.Course)
                 .Include(uc => uc.User)
-                .Select(uc => new {
+                .Select(uc => new
+                {
                     uc.Id,
                     uc.EnrolledAt,
                     UserId = uc.UserId,
                     Username = uc.User!.UserName,
+                    FullName = uc.User.FullName, 
                     Email = uc.User!.Email,
+                    ProfilePhoto = string.IsNullOrEmpty(uc.User.ProfilePhotoPath)
+                        ? null
+                        : $"{Request.Scheme}://{Request.Host}{uc.User.ProfilePhotoPath}", 
                     CourseId = uc.Course!.Id,
                     CourseTitle = uc.Course.Title
                 })
@@ -120,6 +126,7 @@ namespace InternshipManagement.Api.Controllers
 
             return Ok(list);
         }
+
 
         // Get enrollments for a specific course (Admin only)
         [HttpGet("{courseId}/enrollments")]
@@ -129,7 +136,8 @@ namespace InternshipManagement.Api.Controllers
             var list = await _db.UserCourses
                 .Where(uc => uc.CourseId == courseId)
                 .Include(uc => uc.User)
-                .Select(uc => new {
+                .Select(uc => new
+                {
                     uc.UserId,
                     uc.User!.UserName,
                     uc.User!.Email,

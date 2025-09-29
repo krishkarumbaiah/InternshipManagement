@@ -1,60 +1,62 @@
 .leave-container {
-  border-radius: 15px;
-  background: #ffffff;
-  animation: fadeIn 0.4s ease-in-out;
+  border-radius: 1rem;
+  background: #fff;
 
-  h3 {
-    font-size: 1.6rem;
-    border-bottom: 2px solid #eee;
-    padding-bottom: 10px;
-  }
-
-  table {
-    border-radius: 10px;
+  .custom-table {
+    border-radius: 0.75rem;
     overflow: hidden;
 
-    thead {
-      th {
-        text-transform: uppercase;
-        font-size: 0.85rem;
-        letter-spacing: 0.5px;
-      }
-    }
-
-    tbody tr {
-      transition: background 0.2s ease;
-
-      &:hover {
-        background: #f9f9f9;
-      }
-
-      td {
-        vertical-align: middle;
-      }
-    }
-  }
-
-  .btn-group {
-    button {
-      min-width: 85px;
-      font-weight: 500;
-      transition: all 0.2s ease;
-
-      &:hover {
-        transform: translateY(-1px);
-        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
-      }
-    }
-  }
+.custom-table thead tr {
+  background: linear-gradient(90deg, #0d6efd, #6610f2) !important;
 }
 
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(15px);
+.custom-table thead th {
+  color: #fff !important;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 14px;
+}
+
+
+    tbody tr {
+      transition: background-color 0.2s ease;
+      &:hover {
+        background-color: #f8f9fa;
+      }
+    }
+
+    td {
+      padding: 12px;
+      vertical-align: middle;
+    }
   }
-  to {
-    opacity: 1;
-    transform: translateY(0);
+
+  .status-badge {
+    border-radius: 30px;
+    font-weight: 600;
+    font-size: 0.9rem;
+
+    &.pending {
+      background: #ffc1072a;
+      color: #b36b00;
+    }
+    &.approved {
+      background: #28a7452a;
+      color: #1c7430;
+    }
+    &.rejected {
+      background: #dc35452a;
+      color: #842029;
+    }
+  }
+
+
+
+  .btn-group .btn {
+    border-radius: 0.4rem;
+    padding: 6px 12px;
+    font-size: 0.85rem;
+    font-weight: 500;
   }
 }

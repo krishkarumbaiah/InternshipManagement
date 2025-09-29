@@ -26,7 +26,7 @@ namespace InternshipManagement.Api.Data
         public DbSet<Document> Documents { get; set; } = null!;
         public DbSet<Leave> Leaves { get; set; } = null!;
         public DbSet<Feedback> Feedbacks { get; set; } = null!;
-
+        public DbSet<Announcement> Announcements { get; set; }
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
@@ -63,6 +63,15 @@ namespace InternshipManagement.Api.Data
                 .WithMany(c => c.UserCourses)
                 .HasForeignKey(uc => uc.CourseId)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            // Course → Batch mapping
+            builder.Entity<UserCourse>()
+                .HasOne(uc => uc.Batch)
+                .WithMany(b => b.UserCourses)
+                .HasForeignKey(uc => uc.BatchId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+
 
             // Leave mapping
             builder.Entity<Leave>()

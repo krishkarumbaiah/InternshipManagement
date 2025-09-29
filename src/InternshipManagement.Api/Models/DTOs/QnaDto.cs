@@ -8,6 +8,9 @@ namespace InternshipManagement.Api.Models.DTOs
         public string Text { get; set; } = string.Empty;
         public string? Answer { get; set; }
         public DateTime CreatedAt { get; set; }
+        public int? BatchId { get; set; }
+        public string? BatchName { get; set; }
+
     }
 
     public class AskDto

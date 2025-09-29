@@ -1,0 +1,79 @@
+:host ::ng-deep {
+  // Card for form
+  .announcement-card {
+    background: linear-gradient(135deg, #92bb97, #00c6ff);
+    color: #fff;
+    border-radius: 12px;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15);
+
+    .form-label {
+      font-weight: 600;
+      color: #f8f9fa;
+    }
+
+    .form-control,
+    .form-select {
+      border-radius: 8px;
+      border: none;
+      padding: 10px;
+    }
+
+    .btn-create {
+      background: #fff;
+      color: #0062ff;
+      font-weight: bold;
+      border-radius: 8px;
+      padding: 10px 20px;
+      transition: all 0.2s ease;
+
+      &:hover {
+        background: #f8f9fa;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+      }
+    }
+  }
+
+  /* History card */
+  .history-card {
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+
+    .custom-table {
+      width: 100%;
+      border: 2px solid #dee2e6;
+      border-radius: 8px;
+      margin: 0;
+      overflow: hidden;
+
+      
+      thead tr th {
+        background: linear-gradient(90deg, #0d6efd, #0072ff) !important;
+        color: #fff !important;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        font-size: 0.9rem;
+        font-weight: 700;
+        text-align: center;
+        padding: 12px;
+      }
+
+      tbody tr {
+        &:nth-child(odd) {
+          background: #f9f9f9;
+        }
+
+        &:hover {
+          background: #eef6ff;
+        }
+
+        td {
+          border: 1px solid #dee2e6;
+          padding: 12px;
+          vertical-align: middle;
+        }
+      }
+    }
+  }
+}

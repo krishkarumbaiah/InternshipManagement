@@ -1,0 +1,74 @@
+<!-- Create Form -->
+<div class="announcement-card shadow-lg p-3 mb-3">
+  <h3 class="section-title">📢 Create Announcement</h3>
+
+  <form [formGroup]="announcementForm" (ngSubmit)="onSubmit()">
+    <div class="mb-3">
+      <label class="form-label">Title</label>
+      <input formControlName="title" class="form-control" placeholder="Enter title" />
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Message</label>
+      <textarea
+        formControlName="message"
+        rows="3"
+        class="form-control"
+        placeholder="Enter message"
+      ></textarea>
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Batch</label>
+      <select formControlName="batchId" class="form-select" [disabled]="loading">
+        <option [ngValue]="null" disabled>-- Select Batch --</option>
+        <option *ngFor="let b of batches" [ngValue]="b.id">{{ b.name }}</option>
+      </select>
+    </div>
+
+    <button class="btn btn-create mt-2" [disabled]="announcementForm.invalid || loading">
+      ➕ Create
+    </button>
+  </form>
+</div>
+
+<!-- History Table -->
+<div class="history-card shadow-lg p-4">
+  <h3 class="section-title text-dark">📋 Announcement History</h3>
+
+  <div *ngIf="loading">Loading announcements...</div>
+  <div class="table-wrapper">
+    <table
+      *ngIf="!loading && announcements.length > 0"
+      class="table table-bordered table-hover custom-table align-middle"
+    >
+      <thead>
+        <tr>
+          <th>📌 Title</th>
+          <th>📝 Message</th>
+          <th>🗂 Batch</th>
+          <th>⏰ Created At</th>
+          <th>🗑 Action</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr *ngFor="let ann of announcements">
+          <td>
+            <strong>{{ ann.title }}</strong>
+          </td>
+          <td>{{ ann.message }}</td>
+          <td>{{ ann.batchName }}</td>
+          <td>{{ ann.createdAt | date : 'short' }}</td>
+          <td>
+            <button class="btn btn-sm btn-outline-danger" (click)="deleteAnnouncement(ann.id)">
+              🗑 Delete
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div *ngIf="!loading && announcements.length === 0" class="text-muted">No announcements yet.</div>
+</div>

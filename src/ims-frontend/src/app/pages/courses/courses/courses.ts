@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { CourseService } from '../../../services/course';
+import { ToastrService } from 'ngx-toastr';
+
 
 @Component({
   selector: 'app-courses',
@@ -15,7 +17,9 @@ export class CoursesComponent implements OnInit {
   message = '';
   loading = false;
 
-  constructor(private courseSvc: CourseService) {}
+  constructor(private courseSvc: CourseService,
+    private toastr: ToastrService
+  ) {}
 
   ngOnInit(): void {
     this.load();
@@ -35,20 +39,20 @@ export class CoursesComponent implements OnInit {
   enroll(courseId: number) {
     this.courseSvc.enroll(courseId).subscribe({
       next: () => {
-        this.message = 'Enrolled successfully!';
+        this.toastr.success('Enrolled successfully! 🎉', 'Success');
         this.load();
       },
-      error: (err: any) => this.message = err.error || 'Error enrolling'
+      error: (err: any) => this.toastr.error(err.error || 'Error enrolling', 'Error')
     });
   }
 
   unenroll(courseId: number) {
     this.courseSvc.unenroll(courseId).subscribe({
       next: () => {
-        this.message = 'Unenrolled successfully!';
+        this.toastr.info('Unenrolled successfully! 👋', 'Info');
         this.load();
       },
-      error: (err: any) => this.message = err.error || 'Error unenrolling'
+      error: (err: any) => this.toastr.error(err.error || 'Error unenrolling', 'Error')
     });
   }
 }

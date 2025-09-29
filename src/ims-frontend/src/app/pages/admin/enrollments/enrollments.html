@@ -1,7 +1,17 @@
 <div class="container mt-4 enrollments-wrapper">
-  <!-- Title -->
+  <!-- Title + Export Buttons -->
   <div class="d-flex justify-content-between align-items-center mb-4">
     <h3 class="fw-bold text-gradient m-0">📚 All Enrollments</h3>
+
+    <div>
+      <button class="btn btn-sm btn-success me-2" (click)="exportExcel()">
+        📊 Export Excel
+      </button>
+      <button class="btn btn-sm btn-danger" (click)="exportPDF()">
+        📄 Export PDF
+      </button>
+    </div>
+
     <span class="badge total-badge shadow-sm px-4 py-2 fs-6">
       Total: {{ enrollments.length || 0 }}
     </span>
@@ -29,7 +39,9 @@
     <!-- Table Header -->
     <ng-template pTemplate="header">
       <tr>
-        <th pSortableColumn="username">👤 User <p-sortIcon field="username"></p-sortIcon></th>
+        <th>🖼️ Profile</th>
+        <th pSortableColumn="fullName">👤 Full Name <p-sortIcon field="fullName"></p-sortIcon></th>
+        <th pSortableColumn="username">🔑 Username <p-sortIcon field="username"></p-sortIcon></th>
         <th pSortableColumn="email">📧 Email <p-sortIcon field="email"></p-sortIcon></th>
         <th pSortableColumn="courseTitle">🎓 Course <p-sortIcon field="courseTitle"></p-sortIcon></th>
         <th pSortableColumn="enrolledAt">🕒 Enrolled At <p-sortIcon field="enrolledAt"></p-sortIcon></th>
@@ -37,12 +49,21 @@
 
       <!-- Column Filters -->
       <tr class="filter-row">
+        <th></th>
+        <th>
+          <input
+            pInputText
+            type="text"
+            (input)="dt.filter($event.target['value'], 'fullName', 'contains')"
+            placeholder="🔍 Search name"
+          />
+        </th>
         <th>
           <input
             pInputText
             type="text"
             (input)="dt.filter($event.target['value'], 'username', 'contains')"
-            placeholder="🔍 Search user"
+            placeholder="🔍 Search username"
           />
         </th>
         <th>
@@ -68,7 +89,25 @@
     <!-- Table Body -->
     <ng-template pTemplate="body" let-e>
       <tr>
-        <td class="fw-semibold">{{ e.username }}</td>
+        <td>
+          <img
+            *ngIf="e.profilePhoto; else noPhoto"
+            [src]="e.profilePhoto"
+            class="rounded-circle border"
+            style="width: 40px; height: 40px; object-fit: cover"
+            alt="profile"
+          />
+          <ng-template #noPhoto>
+            <div
+              class="rounded-circle bg-light text-dark d-flex align-items-center justify-content-center border"
+              style="width: 40px; height: 40px; font-size: 18px"
+            >
+              👤
+            </div>
+          </ng-template>
+        </td>
+        <td class="fw-semibold">{{ e.fullName }}</td>
+        <td>{{ e.username }}</td>
         <td>{{ e.email }}</td>
         <td>
           <span class="badge course-badge shadow-sm">
@@ -82,7 +121,7 @@
     <!-- Empty State -->
     <ng-template pTemplate="emptymessage">
       <tr>
-        <td colspan="4" class="text-center py-5">
+        <td colspan="6" class="text-center py-5">
           <i class="pi pi-info-circle fs-4 text-muted"></i>
           <div class="mt-2 text-muted">No enrollments found</div>
         </td>

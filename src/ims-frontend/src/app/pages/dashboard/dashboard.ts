@@ -13,7 +13,7 @@ import { ChartConfiguration } from 'chart.js';
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule,  BaseChartDirective],
+  imports: [CommonModule, BaseChartDirective],
   templateUrl: './dashboard.html',
   styleUrls: ['./dashboard.scss']
 })
@@ -26,8 +26,8 @@ export class DashboardComponent implements OnInit {
   private jwtHelper = new JwtHelperService();
 
   // Charts
-  adminUsersChart: ChartConfiguration<'doughnut'>['data'] = { labels: [], datasets: [] };
-  adminAttendanceChart: ChartConfiguration<'bar'>['data'] = { labels: [], datasets: [] };
+  adminUsersChart: ChartConfiguration<'bar'>['data'] = { labels: [], datasets: [] };
+  adminAttendanceChart: ChartConfiguration<'doughnut'>['data'] = { labels: [], datasets: [] };
 
   internAttendanceChart: ChartConfiguration<'doughnut'>['data'] = { labels: [], datasets: [] };
   internQnaChart: ChartConfiguration<'bar'>['data'] = { labels: [], datasets: [] };
@@ -48,6 +48,7 @@ export class DashboardComponent implements OnInit {
 
     if (this.isAdmin()) {
       this.loadAdminOverview();
+      this.loadUsersPerBatch(); 
     } else if (this.isIntern()) {
       this.loadInternOverview();
     }
@@ -66,15 +67,7 @@ export class DashboardComponent implements OnInit {
       next: (res) => {
         this.overview = res;
 
-        // Users chart
-        this.adminUsersChart = {
-          labels: ['Total Users'],
-          datasets: [
-            { data: [res.users.total], backgroundColor: ['#007bff'] }
-          ]
-        };
-
-        // Attendance chart
+        // Attendance chart (unchanged)
         this.adminAttendanceChart = {
           labels: ['Present %', 'Absent %'],
           datasets: [
@@ -86,6 +79,27 @@ export class DashboardComponent implements OnInit {
         };
       },
       error: () => console.error('Failed to load admin dashboard data')
+    });
+  }
+
+  // 🔹 New function: Users per batch chart
+  loadUsersPerBatch() {
+    this.http.get<any[]>(`${environment.apiUrl}/qna/users-per-batch`).subscribe({
+      next: (data) => {
+        this.adminUsersChart = {
+          labels: data.map(x => x.batchName),
+          datasets: [
+            {
+              label: 'Users per Batch',
+              data: data.map(x => x.userCount),
+              backgroundColor: data.map(() =>
+                `hsl(${Math.floor(Math.random() * 360)}, 70%, 60%)`
+              ) // random nice colors
+            }
+          ]
+        };
+      },
+      error: () => console.error('Failed to load users per batch')
     });
   }
 

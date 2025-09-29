@@ -66,12 +66,31 @@
   <table class="custom-meetings-table shadow-sm mt-3" *ngIf="meetings.length > 0">
     <thead>
       <tr>
-        <th>#</th>
-        <th>Title</th>
-        <th>Description</th>
-        <th>Batch</th>
-        <th>Created At</th>
-        <th>Scheduled At</th>
+        <th (click)="sortTable('id')">#</th>
+        <th (click)="sortTable('title')">
+          Title
+          <span *ngIf="sortColumn === 'title'">{{ sortDirection === 'asc' ? '▲' : '▼' }}</span>
+        </th>
+        <th (click)="sortTable('description')">
+          Description
+          <span *ngIf="sortColumn === 'description'">{{
+            sortDirection === 'asc' ? '▲' : '▼'
+          }}</span>
+        </th>
+        <th (click)="sortTable('batchName')">
+          Batch
+          <span *ngIf="sortColumn === 'batchName'">{{ sortDirection === 'asc' ? '▲' : '▼' }}</span>
+        </th>
+        <th (click)="sortTable('createdAt')">
+          Created At
+          <span *ngIf="sortColumn === 'createdAt'">{{ sortDirection === 'asc' ? '▲' : '▼' }}</span>
+        </th>
+        <th (click)="sortTable('scheduledAt')">
+          Scheduled At
+          <span *ngIf="sortColumn === 'scheduledAt'">{{
+            sortDirection === 'asc' ? '▲' : '▼'
+          }}</span>
+        </th>
         <th>Link</th>
         <th>Actions</th>
       </tr>
@@ -82,15 +101,13 @@
         <td class="fw-bold">{{ m.title }}</td>
         <td>{{ m.description }}</td>
         <td>{{ m.batchName || '—' }}</td>
-        <td>{{ m.createdAt | date: 'short' }}</td>
-        <td>{{ m.scheduledAt | date: 'short' }}</td>
+        <td>{{ m.createdAt | date : 'short' }}</td>
+        <td>{{ m.scheduledAt | date : 'short' }}</td>
         <td>
           <a [href]="m.meetingLink" target="_blank" class="btn-link">🔗 Join</a>
         </td>
         <td>
-          <button class="btn btn-delete btn-sm px-3" (click)="deleteMeeting(m.id)">
-            🗑 Delete
-          </button>
+          <button class="btn btn-delete btn-sm px-3" (click)="deleteMeeting(m.id)">🗑 Delete</button>
         </td>
       </tr>
     </tbody>

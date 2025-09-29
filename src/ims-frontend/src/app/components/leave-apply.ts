@@ -5,6 +5,7 @@ import { HttpClient } from '@angular/common/http';
 import { ToastrService } from 'ngx-toastr';
 import { environment } from '../environments/environment';
 import { AuthService } from '../services/auth';
+import Swal from 'sweetalert2';
 
 interface Leave {
   id: number;
@@ -45,7 +46,6 @@ export class LeaveApplyComponent implements OnInit {
   applyLeave() {
     if (!this.leaveForm.valid) return;
 
-    // ❌ don't include userId, backend uses JWT claim
     const data = this.leaveForm.value;
 
     this.http.post(`${environment.apiUrl}/leave/apply`, data).subscribe({
@@ -75,18 +75,30 @@ export class LeaveApplyComponent implements OnInit {
       },
     });
   }
-  cancelLeave(id: number) {
-    if (!confirm('Are you sure you want to cancel this leave request?')) return;
 
-    this.http.delete(`${environment.apiUrl}/leave/cancel/${id}`).subscribe({
-      next: () => {
-        this.toastr.success('Leave request cancelled');
-        this.loadMyLeaves();
-      },
-      error: (err) => {
-        console.error('Cancel leave error:', err);
-        this.toastr.error(err.error?.message || 'Failed to cancel leave');
-      },
+  cancelLeave(id: number) {
+    Swal.fire({
+      title: 'Are you sure?',
+      text: 'Do you really want to cancel this leave request?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#6c757d',
+      confirmButtonText: 'Yes, cancel it',
+      cancelButtonText: 'No, keep it',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.http.delete(`${environment.apiUrl}/leave/cancel/${id}`).subscribe({
+          next: () => {
+            Swal.fire('Cancelled!', 'Your leave request has been cancelled.', 'success');
+            this.loadMyLeaves();
+          },
+          error: (err) => {
+            console.error('Cancel leave error:', err);
+            Swal.fire('Error!', err.error?.message || 'Failed to cancel leave', 'error');
+          },
+        });
+      }
     });
   }
 }

@@ -1,43 +1,48 @@
 /* Navbar Styling */
 .custom-navbar {
   background: linear-gradient(90deg, #0d6efd, #00c6ff);
-  padding: 0.7rem 1.2rem;
+  padding: 0.5rem 1rem; // reduced padding
 }
 
 .navbar-brand {
-  font-size: 1.3rem;
-  letter-spacing: 0.5px;
+  font-size: 1.2rem; // slightly smaller
+  letter-spacing: 0.3px;
 }
 
 .nav-link {
   color: #f8f9fa !important;
-  margin: 0 6px;
+  margin: 0 4px; // reduced spacing
+  padding: 0.3rem 0.5rem; // tighter padding
+  font-size: 0.9rem; // smaller text
   transition: all 0.2s ease-in-out;
 
   &:hover {
     color: #ffe082 !important;
-    transform: translateY(-2px);
+    transform: translateY(-1px);
   }
 }
 
-/* Search bar */
+/* Search bar inside navbar */
 .search-input {
-  border-radius: 20px;
-  padding: 6px 14px;
+  border-radius: 16px; // slightly less rounded
+  padding: 4px 10px; // smaller height
+  font-size: 0.9rem; // match smaller nav font
   border: 1px solid #ced4da;
   transition: all 0.2s ease-in-out;
 
   &:focus {
     border-color: #0d6efd;
-    box-shadow: 0 0 5px rgba(13, 110, 253, 0.5);
+    box-shadow: 0 0 4px rgba(13, 110, 253, 0.4);
   }
 }
 
 .btn-search {
   background: #ffc107;
   color: #212529;
-  border-radius: 20px;
-  font-weight: 600;
+  border-radius: 16px;
+  font-weight: 500;
+  font-size: 0.85rem; // smaller button text
+  padding: 4px 12px; // less height + width
 
   &:hover {
     background: #e0a800;
@@ -49,12 +54,14 @@
 .btn-logout {
   background: #dc3545;
   color: #fff;
-  border-radius: 20px;
-  font-weight: 600;
-  padding: 6px 14px;
+  border-radius: 16px;
+  font-weight: 500;
+  font-size: 0.85rem;
+  padding: 4px 12px;
+  transition: all 0.2s ease-in-out;
 
   &:hover {
     background: #b02a37;
-    transform: translateY(-2px);
+    transform: translateY(-1px);
   }
 }

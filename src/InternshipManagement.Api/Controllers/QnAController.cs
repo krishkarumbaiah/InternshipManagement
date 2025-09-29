@@ -23,8 +23,26 @@ namespace InternshipManagement.Api.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            var qna = await _db.Questions
-                .Include(q => q.User)
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var roles = User.FindAll(ClaimTypes.Role).Select(r => r.Value).ToList();
+
+            IQueryable<Question> query = _db.Questions.Include(q => q.User);
+
+            // 🔹 Restrict interns to their own batch
+            if (roles.Contains("Intern") && int.TryParse(userId, out int parsedUserId))
+            {
+                var batchId = await _db.UserBatches
+                    .Where(ub => ub.UserId == parsedUserId)
+                    .Select(ub => ub.BatchId)
+                    .FirstOrDefaultAsync();
+
+                if (batchId != 0)
+                {
+                    query = query.Where(q => q.BatchId == batchId);
+                }
+            }
+
+            var qna = await query
                 .OrderByDescending(q => q.CreatedAt)
                 .Select(q => new QnaDto
                 {
@@ -33,7 +51,9 @@ namespace InternshipManagement.Api.Controllers
                     UserName = q.User != null ? q.User.UserName ?? string.Empty : string.Empty,
                     Text = q.Text,
                     Answer = q.Answer,
-                    CreatedAt = q.CreatedAt
+                    CreatedAt = q.CreatedAt,
+                    BatchId = q.BatchId,
+                    BatchName = q.Batch != null ? q.Batch.Name : string.Empty
                 })
                 .ToListAsync();
 
@@ -61,7 +81,8 @@ namespace InternshipManagement.Api.Controllers
                     UserName = q.User != null ? q.User.UserName ?? string.Empty : string.Empty,
                     Text = q.Text,
                     Answer = q.Answer,
-                    CreatedAt = q.CreatedAt
+                    CreatedAt = q.CreatedAt,
+                    BatchId = q.BatchId
                 })
                 .ToListAsync();
 
@@ -79,10 +100,22 @@ namespace InternshipManagement.Api.Controllers
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             if (string.IsNullOrEmpty(userId)) return Unauthorized();
 
+            int parsedUserId = int.Parse(userId);
+
+            // 🔹 Get intern’s batch from UserBatches
+            var batchId = await _db.UserBatches
+                .Where(ub => ub.UserId == parsedUserId)
+                .Select(ub => ub.BatchId)
+                .FirstOrDefaultAsync();
+
+            if (batchId == 0)
+                return BadRequest("Intern is not assigned to a batch.");
+
             var question = new Question
             {
-                UserId = int.Parse(userId),
-                Text = dto.Text.Trim()
+                UserId = parsedUserId,
+                Text = dto.Text.Trim(),
+                BatchId = batchId
             };
 
             _db.Questions.Add(question);
@@ -108,7 +141,7 @@ namespace InternshipManagement.Api.Controllers
             return Ok(new { message = "Answer submitted successfully" });
         }
 
-        // PUT: api/qna/edit/{id} ( Intern can edit their own question)
+        // PUT: api/qna/edit/{id} (Intern can edit their own question)
         [Authorize(Roles = "Intern")]
         [HttpPut("edit/{id:int}")]
         public async Task<IActionResult> EditMyQuestion(int id, [FromBody] AskDto dto)
@@ -149,7 +182,6 @@ namespace InternshipManagement.Api.Controllers
         }
 
         // DELETE: api/qna/{id}
-        // DELETE: api/qna/{id}
         [Authorize(Roles = "Admin,Intern")]
         [HttpDelete("{id:int}")]
         public async Task<IActionResult> Delete(int id)
@@ -160,7 +192,7 @@ namespace InternshipManagement.Api.Controllers
             var question = await _db.Questions.FindAsync(id);
             if (question == null) return NotFound("Question not found");
 
-            //  If intern, only allow deleting own question
+            // 🔹 Interns can only delete their own questions
             var roles = User.FindAll(ClaimTypes.Role).Select(r => r.Value).ToList();
             if (roles.Contains("Intern") && question.UserId != int.Parse(userId))
             {
@@ -171,6 +203,24 @@ namespace InternshipManagement.Api.Controllers
             await _db.SaveChangesAsync();
 
             return Ok(new { message = "Question deleted successfully" });
+        }
+
+        // GET: api/qna/users-per-batch
+        [Authorize(Roles = "Admin")]
+        [HttpGet("users-per-batch")]
+        public async Task<IActionResult> GetUsersPerBatch()
+        {
+            var data = await _db.UserBatches
+                .Include(ub => ub.Batch)
+                .GroupBy(ub => ub.Batch.Name)
+                .Select(g => new
+                {
+                    BatchName = g.Key,
+                    UserCount = g.Count()
+                })
+                .ToListAsync();
+
+            return Ok(data);
         }
 
     }

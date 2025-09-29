@@ -9,9 +9,9 @@ namespace InternshipManagement.Api.Models
         public int Id { get; set; }
 
         [Required]
-        public int UserId { get; set; }  
+        public int UserId { get; set; }
         [ForeignKey(nameof(UserId))]
-        public ApplicationUser? User { get; set; } 
+        public ApplicationUser? User { get; set; }
 
         [Required]
         public string Text { get; set; } = string.Empty;
@@ -19,5 +19,9 @@ namespace InternshipManagement.Api.Models
         public string? Answer { get; set; }
 
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+
+        public int? BatchId { get; set; }
+        [ForeignKey(nameof(BatchId))]
+        public Batch? Batch { get; set; }
     }
 }

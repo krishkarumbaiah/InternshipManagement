@@ -26,33 +26,51 @@
 
         <!-- Admin-only menu -->
         <ng-container *ngIf="isAdmin()">
-          <li class="nav-item"><a class="nav-link" routerLink="/admin/enrollments">👥 Enrollments</a></li>
+          <li class="nav-item">
+            <a class="nav-link" routerLink="/admin/enrollments">👥 Enrollments</a>
+          </li>
           <li class="nav-item"><a class="nav-link" routerLink="/batches">📦 Manage Batches</a></li>
-          <li class="nav-item"><a class="nav-link" routerLink="/assignments">📝 Assign Interns</a></li>
+          <li class="nav-item">
+            <a class="nav-link" routerLink="/assignments">📝 Assign Interns</a>
+          </li>
           <li class="nav-item"><a class="nav-link" routerLink="/qna-admin">💬 QnA Admin</a></li>
-          <li class="nav-item"><a class="nav-link" routerLink="/attendance-admin">📊 Attendance</a></li>
+          <li class="nav-item">
+            <a class="nav-link" routerLink="/attendance-admin">📊 Attendance</a>
+          </li>
           <li class="nav-item"><a class="nav-link" routerLink="/meetings-admin">📅 Meetings</a></li>
-          <li class="nav-item"><a class="nav-link" routerLink="/manage-documents">📂 Documents</a></li>
-          <li class="nav-item"><a class="nav-link" routerLink="/leave-manage">🛑 Manage Leaves</a></li>
+          <li class="nav-item">
+            <a class="nav-link" routerLink="/manage-documents">📂 Documents</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" routerLink="/leave-manage">🛑 Manage Leaves</a>
+          </li>
           <li class="nav-item"><a class="nav-link" routerLink="/feedback-admin">📊 Feedback</a></li>
+          <!-- 📢 Announcements -->
+          <li class="nav-item">
+            <a class="nav-link" routerLink="/announcements/create">📢 Announcements</a>
+          </li>
         </ng-container>
 
         <!-- Intern-only menu -->
         <ng-container *ngIf="isIntern()">
           <li class="nav-item"><a class="nav-link" routerLink="/courses">🎓 Courses</a></li>
           <li class="nav-item"><a class="nav-link" routerLink="/qna">💬 QnA</a></li>
-          <li class="nav-item"><a class="nav-link" routerLink="/attendance">📊 My Attendance</a></li>
-          <li class="nav-item"><a class="nav-link" routerLink="/upload-documents">📂 Upload Docs</a></li>
+          <li class="nav-item">
+            <a class="nav-link" routerLink="/attendance">📊 My Attendance</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" routerLink="/upload-documents">📂 Upload Docs</a>
+          </li>
           <li class="nav-item"><a class="nav-link" routerLink="/meetings">📅 Meetings</a></li>
 
           <!-- Notifications with badge -->
           <li class="nav-item position-relative">
-            <a class="nav-link" routerLink="/notifications">
-              🔔 Notifications
-              <span 
-                *ngIf="notifCount > 0" 
+            <a class="nav-link" routerLink="/announcements">
+              📢 Announcements
+              <span
+                *ngIf="notifCount > 0"
                 class="badge bg-danger position-absolute top-0 start-100 translate-middle"
-                style="font-size: 0.75rem; padding: 0.25em 0.4em;"
+                style="font-size: 0.75rem; padding: 0.25em 0.4em"
               >
                 {{ notifCount }}
               </span>
@@ -61,6 +79,19 @@
 
           <li class="nav-item"><a class="nav-link" routerLink="/leave-apply">📝 Apply Leave</a></li>
           <li class="nav-item"><a class="nav-link" routerLink="/feedback">📝 Feedback</a></li>
+                    <li class="nav-item position-relative">
+            <a class="nav-link" routerLink="/notifications">
+              🔔 Notifications
+              <span
+                *ngIf="notifCount > 0"
+                class="badge bg-danger position-absolute top-0 start-100 translate-middle"
+                style="font-size: 0.75rem; padding: 0.25em 0.4em;"
+                aria-live="polite"
+              >
+                {{ notifCount }}
+              </span>
+            </a>
+          </li>
         </ng-container>
       </ul>
 
@@ -85,22 +116,22 @@
           data-bs-toggle="dropdown"
           aria-expanded="false"
         >
-          <!-- Profile Photo -->
-          <img
-            *ngIf="profilePhoto; else defaultAvatar"
-            [src]="profilePhoto"
-            alt="Profile"
-            class="rounded-circle me-2 border"
-            style="width: 34px; height: 34px; object-fit: cover;"
-          />
-          <ng-template #defaultAvatar>
-            <div
-              class="rounded-circle bg-light text-dark d-flex align-items-center justify-content-center me-2"
-              style="width: 34px; height: 34px; font-size: 18px;"
-            >
-              👤
-            </div>
-          </ng-template>
+<!-- Profile Photo -->
+<img
+  *ngIf="profilePhoto && profilePhoto.trim() !== ''; else defaultAvatar"
+  [src]="profilePhoto"
+  alt="Profile Photo"
+  class="rounded-circle me-2 border"
+  style="width: 34px; height: 34px; object-fit: cover"
+/>
+<ng-template #defaultAvatar>
+  <div
+    class="rounded-circle bg-light text-dark d-flex align-items-center justify-content-center me-2"
+    style="width: 34px; height: 34px; font-size: 18px"
+  >
+    👤
+  </div>
+</ng-template>
 
           <!-- Username -->
           <span>{{ username || 'User' }}</span>

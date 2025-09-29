@@ -6,10 +6,12 @@ namespace InternshipManagement.Api.Models
 
         // Foreign Keys
         public int UserId { get; set; }
-        public ApplicationUser User { get; set; } = null!;  
+        public ApplicationUser User { get; set; } = null!;
 
         public int CourseId { get; set; }
-        public Course Course { get; set; } = null!;        
+        public Course Course { get; set; } = null!;
+        public int? BatchId { get; set; }
+        public Batch? Batch { get; set; }
 
         public DateTime EnrolledAt { get; set; } = DateTime.UtcNow;
     }

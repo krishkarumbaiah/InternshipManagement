@@ -29,11 +29,11 @@ namespace InternshipManagement.Api.Services
                         var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
                         var emailService = scope.ServiceProvider.GetRequiredService<IEmailService>();
 
-                        // Time references
+                        
                         var nowUtc = DateTime.UtcNow;
                         var nowLocal = DateTime.Now;
 
-                        // 🔹 Step 1: Create notifications for meetings happening within next 15 mins (UTC comparisons)
+                        // notifications for meetings happening within next 15 mins (UTC comparisons)
                         var upcomingMeetings = await db.Meetings
                             .Include(m => m.Batch)
                                 .ThenInclude(b => b.UserBatches)
@@ -48,15 +48,15 @@ namespace InternshipManagement.Api.Services
 
                             if (!exists)
                             {
-                                // compute notify time in UTC (meeting.ScheduledAt is stored in UTC)
+                                
                                 var notifyUtc = meeting.ScheduledAt.AddMinutes(-10);
                                 if (notifyUtc < nowUtc) notifyUtc = nowUtc; 
 
-                                // prepare user-visible local time string
+                              
                                 var scheduledLocal = meeting.ScheduledAt.ToLocalTime();
-                                var scheduledLocalStr = scheduledLocal.ToString("g"); // short/general
+                                var scheduledLocalStr = scheduledLocal.ToString("g"); 
 
-                                // store message with local time for consistent display in emails/UI
+                                
                                 var message = $"Reminder: Meeting '{meeting.Title}' starts at {scheduledLocalStr}";
 
                                 db.Notifications.Add(new Models.Notification
@@ -65,7 +65,7 @@ namespace InternshipManagement.Api.Services
                                     BatchId = meeting.BatchId,
                                     Message = message,
                                     IsSent = false,
-                                    NotifyAt = notifyUtc, // stored as UTC
+                                    NotifyAt = notifyUtc, 
                                     CreatedAt = DateTime.UtcNow
                                 });
 
@@ -79,7 +79,7 @@ namespace InternshipManagement.Api.Services
                             }
                         }
 
-                        // 🔹 Step 2: Send due reminders (NotifyAt <= nowUtc, not sent)
+                        //  Send due reminders (NotifyAt <= nowUtc, not sent)
                         var dueNotifications = await db.Notifications
                             .Include(n => n.Meeting)
                                 .ThenInclude(m => m.Batch)
@@ -90,10 +90,10 @@ namespace InternshipManagement.Api.Services
 
                         foreach (var notif in dueNotifications)
                         {
-                            // mark as sent (store in UTC)
+                            
                             notif.IsSent = true;
 
-                            // Ensure the message contains a local-time formatted scheduled time (override for consistency)
+                            
                             if (notif.Meeting != null)
                             {
                                 var scheduledLocal = notif.Meeting.ScheduledAt.ToLocalTime();
@@ -119,9 +119,9 @@ namespace InternshipManagement.Api.Services
 
                                     try
                                     {
-                                        // Build a clear HTML email body with local time and link
+                                        
                                         var scheduledLocal = notif.Meeting?.ScheduledAt.ToLocalTime();
-                                        var scheduledLocalStr = scheduledLocal?.ToString("f"); // e.g., "Tuesday, 23 September 2025 3:42 PM"
+                                        var scheduledLocalStr = scheduledLocal?.ToString("f"); 
 
                                         var emailBody = $@"
                                             <p>Hi {ub.User?.FullName ?? "Intern"},</p>
@@ -149,7 +149,7 @@ namespace InternshipManagement.Api.Services
                             _logger.LogInformation("📢 Notification {NotificationId} completed for Meeting {MeetingId}", notif.Id, notif.MeetingId);
                         }
 
-                        // 🔹 Save changes only if something changed
+                        
                         if (upcomingMeetings.Any() || dueNotifications.Any())
                         {
                             await db.SaveChangesAsync(stoppingToken);

@@ -28,25 +28,34 @@ export class ProfileEditComponent implements OnInit {
     this.loadProfile();
   }
 
- loadProfile() {
-  this.loading = true;
-  this.auth.getProfile().subscribe({
-    next: (res) => {
-      this.form.patchValue({ fullName: res.fullName });
+  loadProfile() {
+    this.loading = true;
+    this.auth.getProfile().subscribe({
+      next: (res) => {
+        this.form.patchValue({ fullName: res.fullName });
 
-      if (res.profilePhoto) {
-        this.imagePreview = `${res.profilePhoto}?t=${new Date().getTime()}`; // cache-buster
+        if (res.profilePhoto) {
+          
+          console.log('ProfileEdit.loadProfile -> server profilePhoto:', res.profilePhoto);
+          this.auth.setProfilePhoto(res.profilePhoto);
+          
+          this.imagePreview = this.auth.getProfilePhoto();
+          console.log('ProfileEdit.loadProfile -> preview set to', this.imagePreview);
+        } else {
+          // fallback to default avatar
+          this.auth.setProfilePhoto('/assets/default-avatar.png');
+          this.imagePreview = this.auth.getProfilePhoto();
+        }
+
+        this.loading = false;
+      },
+      error: (err) => {
+        console.error('Failed to load profile', err);
+        this.toastr.error('Failed to load profile');
+        this.loading = false;
       }
-
-      this.loading = false;
-    },
-    error: (err) => {
-      console.error('Failed to load profile', err);
-      this.toastr.error('Failed to load profile');
-      this.loading = false;
-    }
-  });
-}
+    });
+  }
 
   onFileSelected(event: Event) {
     const input = event.target as HTMLInputElement;
@@ -78,41 +87,47 @@ export class ProfileEditComponent implements OnInit {
   }
 
   submit() {
-  if (this.form.invalid) {
-    this.form.markAllAsTouched();
-    this.toastr.warning('Please fill the name');
-    return;
-  }
-
-  const formData = new FormData();
-  formData.append('FullName', this.form.get('fullName')?.value);
-  if (this.selectedFile) {
-    formData.append('ProfilePhoto', this.selectedFile, this.selectedFile.name);
-  }
-
-  this.submitting = true;
-  this.auth.updateProfile(formData).subscribe({
-    next: (res) => {
-      this.toastr.success('Profile updated');
-
-      if (res.profilePhoto) {
-        // Force refresh by appending a cache-buster
-        const freshUrl = `${res.profilePhoto}?t=${new Date().getTime()}`;
-
-        // Save per-user in AuthService
-        this.auth.setProfilePhoto(freshUrl);
-
-        // Update preview immediately
-        this.imagePreview = freshUrl;
-      }
-      this.submitting = false;
-    },
-    error: (err) => {
-      console.error(err);
-      this.toastr.error(err?.error?.message ?? 'Failed to update profile');
-      this.submitting = false;
+    if (this.form.invalid) {
+      this.form.markAllAsTouched();
+      this.toastr.warning('Please fill the name');
+      return;
     }
-  });
-}
 
+    const formData = new FormData();
+    formData.append('FullName', this.form.get('fullName')?.value);
+    if (this.selectedFile) {
+      formData.append('ProfilePhoto', this.selectedFile, this.selectedFile.name);
+    }
+
+    this.submitting = true;
+    this.auth.updateProfile(formData).subscribe({
+      next: (res) => {
+        this.toastr.success('Profile updated');
+
+        if (res.profilePhoto) {
+          console.log('ProfileEdit.submit -> server returned profilePhoto:', res.profilePhoto);
+          this.auth.setProfilePhoto(res.profilePhoto);
+
+          this.imagePreview = this.auth.getProfilePhoto();
+          console.log('ProfileEdit.submit -> preview updated to', this.imagePreview);
+        } else {
+         
+          this.auth.setProfilePhoto('/assets/default-avatar.png');
+          this.imagePreview = this.auth.getProfilePhoto();
+        }
+
+        
+        this.selectedFile = undefined;
+     
+        this.loadProfile();
+
+        this.submitting = false;
+      },
+      error: (err) => {
+        console.error(err);
+        this.toastr.error(err?.error?.message ?? 'Failed to update profile');
+        this.submitting = false;
+      }
+    });
+  }
 }

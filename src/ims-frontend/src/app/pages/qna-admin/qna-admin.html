@@ -16,6 +16,7 @@
         <th>#</th>
         <th>Question</th>
         <th>Asked By</th>
+        <th>Batch</th>
         <th>Answer</th>
         <th>Actions</th>
       </tr>
@@ -26,6 +27,7 @@
         <td>{{ i + 1 }}</td>
         <td class="fw-semibold">{{ item.text }}</td>
         <td>{{ item.userName }}</td>
+        <td>{{ item.batchName || '—' }}</td>
         <td>
           <!-- Edit mode -->
           <div *ngIf="editAnswerId === item.id; else viewAnswer">
@@ -39,7 +41,7 @@
             <div *ngIf="item.answer; else noAnswer">
               <span class="answer-text">{{ item.answer }}</span>
               <button class="btn btn-link btn-sm p-0 ms-2 edit-link" (click)="startEditAnswer(item)">
-                ✏️ Edit
+                ✏️ Edit 
               </button>
             </div>
             <ng-template #noAnswer>
@@ -51,7 +53,7 @@
           </ng-template>
         </td>
         <td>
-          <button class="btn btn-delete btn-sm" (click)="deleteQuestion(item.id)">🗑️ Delete</button>
+          <button class="btn btn-delete btn-sm" (click)="deleteQuestion(item.id)">🗑️ </button>
         </td>
       </tr>
     </ng-template>

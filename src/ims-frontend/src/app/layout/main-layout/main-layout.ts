@@ -37,6 +37,9 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
     { label: 'attendance admin', route: '/attendance-admin', role: 'Admin' },
     { label: 'meetings admin', route: '/meetings-admin', role: 'Admin' },
     { label: 'manage documents', route: '/manage-documents', role: 'Admin' },
+    { label: 'manage leaves', route: '/leave-manage', role: 'Admin' },
+    { label: 'feedback', route: '/feedback-admin', role: 'Admin' },
+    { label: 'announcements', route: '/announcements/create', role: 'Admin' },
 
     { label: 'courses', route: '/courses', role: 'Intern' },
     { label: 'qna', route: '/qna', role: 'Intern' },
@@ -55,8 +58,8 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
+    // roles + username as before
     this.roles = JSON.parse(localStorage.getItem('roles') || '[]');
-
     const token = localStorage.getItem('token');
     if (token) {
       const decoded = this.jwtHelper.decodeToken(token);
@@ -65,23 +68,45 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
       this.username = 'User';
     }
 
-    // 👇 subscribe to profile photo updates
-    this.photoSub = this.auth.profilePhoto$.subscribe((photo) => {
-      this.profilePhoto = photo ? `${photo}?t=${new Date().getTime()}` : null;
-    });
+    // --- 1) First try to show local storage value immediately (fast) ---
+    const initial = this.auth.getProfilePhoto();
+    if (initial) {
+      this.profilePhoto = initial;
+      console.log('MainLayout: using initial profilePhoto from AuthService/localStorage ->', initial);
+    }
 
-    // 👇 subscribe to real-time notif count
+    // --- 2) Ensure we load latest profile from API (guarantee fresh value) ---
+    // If the user is logged in, call backend to get latest profile (this avoids stale localStorage)
+    if (this.auth.isLoggedIn()) {
+      this.auth.getProfile().subscribe({
+        next: (res) => {
+          if (res?.profilePhoto) {
+            // AuthService.setProfilePhoto will attach timestamp and push subject
+            this.auth.setProfilePhoto(res.profilePhoto);
+            console.log('MainLayout: fetched profile from API and set global photo:', res.profilePhoto);
+          } else {
+            // ensure default if none
+            this.auth.setProfilePhoto('/assets/default-avatar.png');
+          }
+        },
+        error: (err) => {
+          console.warn('MainLayout: failed to fetch profile on init', err);
+        }
+      });
+    }
+
+    // --- 3) Subscribe to BehaviorSubject to receive updates after edits ---
+this.photoSub = this.auth.profilePhoto$.subscribe(photo => {
+  if (!photo) { this.profilePhoto = null; return; }
+  // add cache-buster only if not present
+  this.profilePhoto = photo.includes('?') ? photo : `${photo}?t=${Date.now()}`;
+});
+
+    // notif subscription and polling
     if (this.isIntern()) {
-      this.notifSub = this.notifService.notifCount$.subscribe(
-        (count) => (this.notifCount = count)
-      );
-
-      // load immediately + poll every 1 min
+      this.notifSub = this.notifService.notifCount$.subscribe((count) => (this.notifCount = count));
       this.notifService.refreshCount();
-      this.notifInterval = setInterval(
-        () => this.notifService.refreshCount(),
-        60000
-      );
+      this.notifInterval = setInterval(() => this.notifService.refreshCount(), 60000);
     }
   }
 
@@ -123,8 +148,7 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
 
     const matches = this.navItems.filter(
       (item) =>
-        item.label.toLowerCase().includes(query) &&
-        (!item.role || this.roles.includes(item.role))
+        item.label.toLowerCase().includes(query) && (!item.role || this.roles.includes(item.role))
     );
 
     if (matches.length > 0) {

@@ -14,10 +14,28 @@ namespace InternshipManagement.Api.Controllers
     public class ProfileController : ControllerBase
     {
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IWebHostEnvironment _env;
 
-        public ProfileController(UserManager<ApplicationUser> userManager)
+        public ProfileController(UserManager<ApplicationUser> userManager, IWebHostEnvironment env)
         {
             _userManager = userManager;
+            _env = env;
+        }
+
+        // ✅ Helper: build absolute photo URL
+        private string? GetPhotoUrl(string? relativePath)
+        {
+            if (string.IsNullOrEmpty(relativePath))
+                return null;
+
+            var physicalPath = Path.Combine(_env.WebRootPath, relativePath.TrimStart('/').Replace('/', Path.DirectorySeparatorChar));
+            if (!System.IO.File.Exists(physicalPath))
+            {
+                // fallback default avatar
+                return $"{Request.Scheme}://{Request.Host}/assets/default-avatar.png";
+            }
+
+            return $"{Request.Scheme}://{Request.Host}{relativePath}";
         }
 
         // GET: api/profile
@@ -36,15 +54,20 @@ namespace InternshipManagement.Api.Controllers
                     u.UserName,
                     u.Email,
                     u.FullName,
-                    ProfilePhoto = string.IsNullOrEmpty(u.ProfilePhotoPath)
-                        ? null
-                        : $"{Request.Scheme}://{Request.Host}{u.ProfilePhotoPath}" // return absolute URL
+                    u.ProfilePhotoPath
                 })
                 .FirstOrDefaultAsync();
 
             if (user == null) return NotFound();
 
-            return Ok(user);
+            return Ok(new
+            {
+                user.Id,
+                user.UserName,
+                user.Email,
+                user.FullName,
+                ProfilePhoto = GetPhotoUrl(user.ProfilePhotoPath)
+            });
         }
 
         // PUT: api/profile
@@ -74,7 +97,7 @@ namespace InternshipManagement.Api.Controllers
                 if (dto.ProfilePhoto.Length > maxBytes)
                     return BadRequest(new { message = "Profile photo max size is 2 MB" });
 
-                var uploadsRoot = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads", "profiles");
+                var uploadsRoot = Path.Combine(_env.WebRootPath, "uploads", "profiles");
                 if (!Directory.Exists(uploadsRoot)) Directory.CreateDirectory(uploadsRoot);
 
                 var ext = Path.GetExtension(dto.ProfilePhoto.FileName);
@@ -98,18 +121,16 @@ namespace InternshipManagement.Api.Controllers
 
                 newRelativePath = $"/uploads/profiles/{fileName}";
 
+                // delete old photo
                 if (!string.IsNullOrWhiteSpace(user.ProfilePhotoPath))
                 {
                     try
                     {
-                        var old = user.ProfilePhotoPath.TrimStart('/');
-                        var oldFull = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", old.Replace('/', Path.DirectorySeparatorChar));
-                        if (System.IO.File.Exists(oldFull))
-                        {
-                            System.IO.File.Delete(oldFull);
-                        }
+                        var oldPath = Path.Combine(_env.WebRootPath, user.ProfilePhotoPath.TrimStart('/').Replace('/', Path.DirectorySeparatorChar));
+                        if (System.IO.File.Exists(oldPath))
+                            System.IO.File.Delete(oldPath);
                     }
-                    catch { /* ignore errors */ }
+                    catch { /* ignore */ }
                 }
             }
 
@@ -133,11 +154,8 @@ namespace InternshipManagement.Api.Controllers
                 user.UserName,
                 user.Email,
                 user.FullName,
-                ProfilePhoto = string.IsNullOrEmpty(user.ProfilePhotoPath)
-                    ? null
-                    : $"{Request.Scheme}://{Request.Host}{user.ProfilePhotoPath}" // absolute URL
+                ProfilePhoto = GetPhotoUrl(user.ProfilePhotoPath)
             });
         }
     }
 }
-    

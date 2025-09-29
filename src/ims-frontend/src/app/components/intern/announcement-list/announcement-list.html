@@ -1,0 +1,22 @@
+<div class="announcements-wrapper card shadow-lg p-4">
+  <h3 class="section-title">📢 My Announcements</h3>
+
+  <div *ngIf="loading" class="loading-text">Loading announcements...</div>
+
+  <div *ngIf="!loading && announcements.length > 0" class="announcements-list">
+    <div *ngFor="let ann of announcements" class="announcement-item shadow-sm">
+      <div class="announcement-header">
+        <h5>{{ ann.title }}</h5>
+        <span class="badge bg-primary">{{ ann.batchName }}</span>
+      </div>
+      <p class="announcement-message">{{ ann.message }}</p>
+      <div class="announcement-meta">
+        <small>📅 {{ ann.createdAt | date:'medium' }}</small>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="!loading && announcements.length === 0" class="no-data">
+    No announcements yet.
+  </div>
+</div>

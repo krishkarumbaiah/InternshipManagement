@@ -25,6 +25,8 @@ import { LeaveManageComponent } from './components/leave-manage';
 import { FeedbackFormComponent } from './pages/feedback/feedback-form';
 import { FeedbackAdminComponent } from './pages/feedback/feedback-admin';
 import { ProfileEditComponent } from './pages/Profile/profile-edit';
+import { AnnouncementListComponent } from './components/intern/announcement-list/announcement-list';
+import { AnnouncementCreateComponent } from './components/admin/announcement-create/announcement-create';
 
 export const routes: Routes = [
   // Public routes
@@ -56,6 +58,7 @@ export const routes: Routes = [
       { path: 'upload-documents', component: UploadDocumentsComponent, data: { roles: ['Intern'] } },
       { path: 'leave-apply', component: LeaveApplyComponent, data: { roles: ['Intern'] } },
       { path: 'feedback', component: FeedbackFormComponent, data: { roles: ['Intern'] } },
+      { path: 'announcements', component: AnnouncementListComponent, data: { roles: ['Intern'] } },
 
       // Admin routes
       { path: 'qna-admin', component: QnaAdminComponent, data: { roles: ['Admin'] } },
@@ -67,6 +70,7 @@ export const routes: Routes = [
       { path: 'manage-documents', component: ManageDocumentsComponent, data: { roles: ['Admin'] } },
       { path: 'leave-manage', component: LeaveManageComponent, data: { roles: ['Admin'] } },
       { path: 'feedback-admin', component: FeedbackAdminComponent, data: { roles: ['Admin'] } },
+      { path: 'announcements/create', component: AnnouncementCreateComponent, data: { roles: ['Admin'] } },
 
       // Shared route for both Admin & Intern
       { path: 'profile-edit', component: ProfileEditComponent, data: { roles: ['Intern', 'Admin'] } }

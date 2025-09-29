@@ -9,6 +9,7 @@ import { ActivatedRoute, Router ,RouterModule} from '@angular/router';
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, RouterModule],
   templateUrl: './reset-password.html',
+  styleUrls: ['./reset-password.scss']
 })
 export class ResetPasswordComponent {
   form: FormGroup;

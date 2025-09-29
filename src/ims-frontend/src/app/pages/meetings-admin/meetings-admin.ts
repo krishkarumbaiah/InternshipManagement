@@ -15,8 +15,11 @@ import Swal from 'sweetalert2';
 })
 export class MeetingsAdminComponent implements OnInit {
   meetings: any[] = [];
-  batches: any[] = []; // store available batches
+  batches: any[] = [];
   newMeeting = { title: '', description: '', scheduledAt: '', meetingLink: '', batchId: '' };
+
+  sortColumn: string = '';
+  sortDirection: 'asc' | 'desc' = 'asc';
 
   constructor(private http: HttpClient, private toastr: ToastrService) {}
 
@@ -55,7 +58,6 @@ export class MeetingsAdminComponent implements OnInit {
     });
   }
 
-  // Delete meeting with SweetAlert2
   deleteMeeting(id: number) {
     Swal.fire({
       title: 'Are you sure?',
@@ -75,6 +77,35 @@ export class MeetingsAdminComponent implements OnInit {
           },
           error: () => this.toastr.error('Failed to delete meeting ❌'),
         });
+      }
+    });
+  }
+
+  // ✅ Sorting function
+  sortTable(column: string) {
+    if (this.sortColumn === column) {
+      // toggle direction
+      this.sortDirection = this.sortDirection === 'asc' ? 'desc' : 'asc';
+    } else {
+      this.sortColumn = column;
+      this.sortDirection = 'asc';
+    }
+
+    this.meetings.sort((a, b) => {
+      const valA = a[column];
+      const valB = b[column];
+
+      if (valA == null) return 1;
+      if (valB == null) return -1;
+
+      if (typeof valA === 'string') {
+        return this.sortDirection === 'asc'
+          ? valA.localeCompare(valB)
+          : valB.localeCompare(valA);
+      } else {
+        return this.sortDirection === 'asc'
+          ? valA > valB ? 1 : -1
+          : valA < valB ? 1 : -1;
       }
     });
   }

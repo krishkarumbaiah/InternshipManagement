@@ -197,9 +197,13 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseCors("AllowAngular");
+
+// ✅ Make static files available before auth
+app.UseStaticFiles();
+
 app.UseAuthentication();
 app.UseAuthorization();
-app.MapControllers();
-app.UseStaticFiles();
-app.Run();
 
+app.MapControllers();
+
+app.Run();

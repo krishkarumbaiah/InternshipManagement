@@ -24,8 +24,8 @@
         required
         (change)="loadAssignments(selectedBatch!)"
       >
-        <option value="" disabled selected>-- Choose Batch --</option>
-        <option *ngFor="let batch of batches" [value]="batch.id">
+        <option [ngValue]="null" disabled>-- Choose Batch --</option>
+        <option *ngFor="let batch of batches" [ngValue]="batch.id">
           {{ batch.name }}
         </option>
       </select>
@@ -40,7 +40,10 @@
   </form>
 
   <!-- Assignments Table -->
-  <table class="table table-bordered table-hover mt-5 custom-assignment-table" *ngIf="assignments.length > 0">
+  <table
+    class="table table-bordered table-hover mt-5 custom-assignment-table"
+    *ngIf="assignments.length > 0"
+  >
     <thead>
       <tr>
         <th>#</th>

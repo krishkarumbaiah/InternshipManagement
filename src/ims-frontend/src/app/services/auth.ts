@@ -1,4 +1,5 @@
-import { Injectable } from '@angular/core'; 
+// src/app/services/auth.ts
+import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../environments/environment';
 import { Observable, BehaviorSubject } from 'rxjs';
@@ -9,17 +10,26 @@ import { Observable, BehaviorSubject } from 'rxjs';
 export class AuthService {
   private apiUrl = environment.apiUrl;
 
-  // 🔥 Shared observable for profile photo
   private profilePhotoSubject = new BehaviorSubject<string | null>(this.loadInitialPhoto());
   profilePhoto$ = this.profilePhotoSubject.asObservable();
 
   constructor(private http: HttpClient) {}
 
   private loadInitialPhoto(): string | null {
+   
     const userId = localStorage.getItem('userId');
-    return userId ? localStorage.getItem(`profilePhoto_${userId}`) : null;
+    if (userId) {
+      const byUser = localStorage.getItem(`profilePhoto_${userId}`);
+      if (byUser && byUser.trim() !== '') return byUser;
+    }
+
+    const generic = localStorage.getItem('profilePhoto');
+    if (generic && generic.trim() !== '') return generic;
+
+    return null;
   }
 
+  // --------- Auth / API calls ----------
   login(data: any): Observable<any> {
     return this.http.post(`${this.apiUrl}/auth/login`, data);
   }
@@ -49,12 +59,8 @@ export class AuthService {
     });
   }
 
-  saveAuthData(
-    token: string,
-    roles: string[] = [],
-    userId?: string | number | null,
-    profilePhoto?: string
-  ) {
+
+  saveAuthData(token: string, roles: string[] = [], userId?: string | number | null, profilePhoto?: string) {
     if (token) localStorage.setItem('token', token);
     if (roles) localStorage.setItem('roles', JSON.stringify(roles));
     if (userId !== undefined && userId !== null) {
@@ -62,8 +68,13 @@ export class AuthService {
       if (profilePhoto) {
         const key = `profilePhoto_${userId}`;
         localStorage.setItem(key, profilePhoto);
-        this.profilePhotoSubject.next(profilePhoto); // 🔥 notify subscribers
+        
+        this.profilePhotoSubject.next(profilePhoto);
       }
+    } else if (profilePhoto) {
+      
+      localStorage.setItem('profilePhoto', profilePhoto);
+      this.profilePhotoSubject.next(profilePhoto);
     }
   }
 
@@ -81,19 +92,37 @@ export class AuthService {
     return id ? Number(id) : null;
   }
 
-  getProfilePhoto(): string | null {
-    const userId = this.getUserId();
-    if (!userId) return null;
-    return localStorage.getItem(`profilePhoto_${userId}`);
+
+  getProfilePhoto(): string {
+    const cur = this.profilePhotoSubject.getValue();
+    return cur && cur.trim() !== '' ? cur : '/assets/default-avatar.png';
   }
 
-  setProfilePhoto(photoUrl: string) {
+
+  setProfilePhoto(photoUrl: string | null) {
     const userId = this.getUserId();
+
+    const finalUrl = photoUrl && photoUrl.trim() !== '' ? photoUrl : '/assets/default-avatar.png';
+
     if (userId) {
       const key = `profilePhoto_${userId}`;
-      localStorage.setItem(key, photoUrl);
-      this.profilePhotoSubject.next(photoUrl); // 🔥 live update
+      try {
+        localStorage.setItem(key, finalUrl);
+      } catch (e) {
+       
+        console.warn('Failed to save profilePhoto to localStorage', e);
+      }
+    } else {
+      
+      try {
+        localStorage.setItem('profilePhoto', finalUrl);
+      } catch (e) {
+        console.warn('Failed to save generic profilePhoto to localStorage', e);
+      }
     }
+
+    
+    this.profilePhotoSubject.next(finalUrl);
   }
 
   isLoggedIn(): boolean {
@@ -117,9 +146,12 @@ export class AuthService {
     if (userId) {
       localStorage.removeItem(`profilePhoto_${userId}`);
     }
+   
+    localStorage.removeItem('profilePhoto');
+
     localStorage.removeItem('token');
     localStorage.removeItem('roles');
     localStorage.removeItem('userId');
-    this.profilePhotoSubject.next(null); // 🔥 clear for subscribers
+    this.profilePhotoSubject.next(null);
   }
 }

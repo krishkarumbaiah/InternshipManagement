@@ -24,7 +24,7 @@ export class MeetingsComponent implements OnInit {
     this.loadMeetings();
   }
 
-  // ✅ directly call /upcoming/mine
+  
   loadMeetings() {
     this.http.get<any[]>(`${this.apiUrl}/meetings/upcoming/mine`).subscribe({
       next: (res) => (this.meetings = res),

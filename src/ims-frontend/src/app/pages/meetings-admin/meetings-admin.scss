@@ -54,6 +54,24 @@
     vertical-align: middle;
   }
 
+  /* ✅ Sorting effect */
+  th {
+    cursor: pointer;
+    position: relative;
+    user-select: none;
+    transition: background 0.2s;
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    .sort-icon {
+      font-size: 0.8rem;
+      margin-left: 6px;
+      color: #ffe082;
+    }
+  }
+
   tbody tr:nth-child(odd) {
     background-color: #f9fbfd;
   }

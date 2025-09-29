@@ -21,6 +21,7 @@ interface Leave {
   imports: [CommonModule],
   templateUrl: './leave-manage.html',
   styleUrls: ['./leave-manage.scss'],
+  
 })
 export class LeaveManageComponent implements OnInit {
   leaves: Leave[] = [];

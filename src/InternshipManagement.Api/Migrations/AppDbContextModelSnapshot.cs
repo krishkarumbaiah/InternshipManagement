@@ -22,6 +22,35 @@ namespace InternshipManagement.Api.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("InternshipManagement.Api.Models.Announcement", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("BatchId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("Message")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BatchId");
+
+                    b.ToTable("Announcements");
+                });
+
             modelBuilder.Entity("InternshipManagement.Api.Models.ApplicationUser", b =>
                 {
                     b.Property<int>("Id")
@@ -355,6 +384,9 @@ namespace InternshipManagement.Api.Migrations
                     b.Property<string>("Answer")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("BatchId")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
@@ -366,6 +398,8 @@ namespace InternshipManagement.Api.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("BatchId");
 
                     b.HasIndex("UserId");
 
@@ -449,6 +483,9 @@ namespace InternshipManagement.Api.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<int?>("BatchId")
+                        .HasColumnType("int");
+
                     b.Property<int>("CourseId")
                         .HasColumnType("int");
 
@@ -459,6 +496,8 @@ namespace InternshipManagement.Api.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("BatchId");
 
                     b.HasIndex("CourseId");
 
@@ -628,6 +667,17 @@ namespace InternshipManagement.Api.Migrations
                     b.ToTable("Otps");
                 });
 
+            modelBuilder.Entity("InternshipManagement.Api.Models.Announcement", b =>
+                {
+                    b.HasOne("InternshipManagement.Api.Models.Batch", "Batch")
+                        .WithMany("Announcements")
+                        .HasForeignKey("BatchId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Batch");
+                });
+
             modelBuilder.Entity("InternshipManagement.Api.Models.ApplicationUser", b =>
                 {
                     b.HasOne("InternshipManagement.Api.Models.Batch", "Batch")
@@ -710,11 +760,17 @@ namespace InternshipManagement.Api.Migrations
 
             modelBuilder.Entity("InternshipManagement.Api.Models.Question", b =>
                 {
+                    b.HasOne("InternshipManagement.Api.Models.Batch", "Batch")
+                        .WithMany()
+                        .HasForeignKey("BatchId");
+
                     b.HasOne("InternshipManagement.Api.Models.ApplicationUser", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Batch");
 
                     b.Navigation("User");
                 });
@@ -740,6 +796,11 @@ namespace InternshipManagement.Api.Migrations
 
             modelBuilder.Entity("InternshipManagement.Api.Models.UserCourse", b =>
                 {
+                    b.HasOne("InternshipManagement.Api.Models.Batch", "Batch")
+                        .WithMany("UserCourses")
+                        .HasForeignKey("BatchId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
                     b.HasOne("InternshipManagement.Api.Models.Course", "Course")
                         .WithMany("UserCourses")
                         .HasForeignKey("CourseId")
@@ -751,6 +812,8 @@ namespace InternshipManagement.Api.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Batch");
 
                     b.Navigation("Course");
 
@@ -810,7 +873,11 @@ namespace InternshipManagement.Api.Migrations
 
             modelBuilder.Entity("InternshipManagement.Api.Models.Batch", b =>
                 {
+                    b.Navigation("Announcements");
+
                     b.Navigation("UserBatches");
+
+                    b.Navigation("UserCourses");
                 });
 
             modelBuilder.Entity("InternshipManagement.Api.Models.Course", b =>
